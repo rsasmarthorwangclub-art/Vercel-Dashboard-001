@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบรวม - เว็บไซต์หลัก & ระบบเช็คชื่อ</title>
+  
+  <!-- Tailwind CSS & Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+      background-color: #f1f5f9;
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #1b357a 0%, #1e40af 50%, #2563eb 100%);
+    }
+    /* คลาสสำหรับสลับหน้าจอ */
+    .page-hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ============================================================ -->
+  <!-- 🟢 ส่วนที่ 1: หน้าเว็บไซต์หลัก (วางโค้ดของคุณที่นี่) -->
+  <!-- ============================================================ -->
+  <div id="page-main" class="flex-grow flex flex-col">
+    <!-- Navbar หน้าหลัก -->
+    <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-slate-800">หน้าเว็บไซต์หลักของคุณ</h1>
+      
+      <!-- ปุ่มสำหรับกดไปหน้าระบบเช็คชื่อแยก -->
+      <button onclick="switchAppPage('page-attendance')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition flex items-center gap-2">
+        <span>📋</span> เข้าสู่ระบบเช็คชื่อกิจกรรม
+      </button>
+    </header>
+
+    <!-- พื้นที่สำหรับใส่เนื้อหาเว็บเดิมของคุณ -->
+    <main class="max-w-7xl mx-auto w-full p-6 flex-grow flex flex-col justify-center items-center">
+      
+      <div class="bg-blue-50 border border-blue-200 border-dashed rounded-3xl p-12 text-center w-full">
+        <h2 class="text-2xl font-bold text-blue-800 mb-2">👇 นำโค้ดเว็บเดิมของคุณมาใส่ตรงนี้ 👇</h2>
+        <p class="text-slate-500 mb-6">โค้ดส่วนนี้คือหน้าแรก เมื่อผู้ใช้เข้ามาจะเห็นหน้านี้ก่อน</p>
+        
+        <!-- ========================================== -->
+        <!-- วางเนื้อหา HTML / โค้ดเว็บเดิมของคุณด้านล่างนี้ -->
+        <!-- ========================================== -->
+        
+        <div class="text-left bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <p class="text-slate-400 text-sm">ตัวอย่างเนื้อหาเว็บไซต์หลัก...</p>
+          <br><br><br><br>
+        </div>
+        
+        <!-- ========================================== -->
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- 🔵 ส่วนที่ 2: หน้าระบบเช็คชื่อ (เข้าผ่านปุ่มหน้าหลักเท่านั้น) -->
+  <!-- ============================================================ -->
+  <div id="page-attendance" class="page-hidden flex-grow flex flex-col">
+    
+    <!-- HEADER ระบบเช็คชื่อ -->
+    <header class="header-gradient text-white pt-6 pb-4 px-4 shadow-md">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        
+        <div class="flex items-center gap-3">
+          <!-- ปุ่มกลับหน้าหลัก -->
+          <button onclick="switchAppPage('page-main')" class="bg-white/20 hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition" title="กลับหน้าหลัก">
+            ⬅️
+          </button>
+          
+          <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center p-1 shadow-md border border-amber-300">
+            <img src="https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png" alt="Logo" class="w-full h-full object-contain">
+          </div>
+          <div>
+            <h1 class="text-xl md:text-2xl font-bold tracking-wide">ระบบเช็คชื่อการเข้าร่วมกิจกรรม</h1>
+            <p class="text-xs text-blue-200 flex items-center gap-1">เครือข่ายเยาวชนจิตอาสาแห่งหอวัง ปทุมธานี</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div id="admin-indicator" class="bg-blue-950/60 backdrop-blur px-3 py-1.5 rounded-full text-xs flex items-center gap-2 border border-blue-400/30">
+            <span id="admin-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span id="admin-status-text">บุคคลทั่วไป (ดูได้อย่างเดียว)</span>
+          </div>
+          <button id="btn-admin-auth" onclick="toggleAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow transition flex items-center gap-1">
+            🔑 แอดมิน
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs ของระบบเช็คชื่อ -->
+      <div class="max-w-7xl mx-auto mt-6 flex flex-wrap gap-2 text-sm font-medium">
+        <button onclick="switchTab('checkin')" id="tab-checkin" class="px-4 py-2.5 rounded-xl bg-white text-blue-900 font-bold shadow flex items-center gap-2">📋 เช็คชื่อ</button>
+        <button onclick="switchTab('daily')" id="tab-daily" class="px-4 py-2.5 rounded-xl text-blue-100 hover:bg-white/10 flex items-center gap-2">📅 รายละเอียดวัน</button>
+        <button onclick="switchTab('records')" id="tab-records" class="px-4 py-2.5 rounded-xl text-blue-100 hover:bg-white/10 flex items-center gap-2">⏱️ ประวัติ <span id="badge-records-count" class="bg-blue-800 text-xs px-2 py-0.5 rounded-full">0</span></button>
+        <button onclick="switchTab('stats')" id="tab-stats" class="px-4 py-2.5 rounded-xl text-blue-100 hover:bg-white/10 flex items-center gap-2">📊 สถิติ</button>
+        <button onclick="switchTab('personnel')" id="tab-personnel" class="px-4 py-2.5 rounded-xl text-blue-100 hover:bg-white/10 flex items-center gap-2">👥 จัดการบุคลากร <span id="badge-personnel-count" class="bg-blue-800 text-xs px-2 py-0.5 rounded-full">0</span></button>
+      </div>
+    </header>
+
+    <!-- CONTENT ระบบเช็คชื่อ -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-6 flex-grow">
+      
+      <!-- หน้าเช็คชื่อ -->
+      <section id="sec-checkin" class="space-y-6">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+          <h2 class="text-base font-bold text-slate-800 border-b pb-3">1. กำหนดข้อมูลกิจกรรม</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div><label>📅 เลือกวันที่</label><input type="date" id="checkin-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none"></div>
+            <div>
+              <label>📑 เลือกรูปแบบกิจกรรม</label>
+              <select id="checkin-activity" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none">
+                <option value="ประชุมองค์กร / สภานักเรียน">ประชุมองค์กร / สภานักเรียน</option>
+                <option value="ค่ายพัฒนาศักยภาพ">ค่ายพัฒนาศักยภาพ</option>
+              </select>
+            </div>
+            <div>
+              <label>📍 เลือกสถานที่</label>
+              <select id="checkin-location" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none">
+                <option value="ห้องจริยธรรม">ห้องจริยธรรม</option>
+                <option value="หอประชุมใหญ่">หอประชุมใหญ่</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+          <div class="flex justify-between items-center border-b pb-4">
+            <h2 class="text-base font-bold text-slate-800">2. รายชื่อบุคลากร</h2>
+            <div class="flex gap-2">
+              <button onclick="adminAction(() => setAllStatus('มา'))" class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-bold">มาทั้งหมด</button>
+              <button onclick="adminAction(saveAttendanceRecord)" class="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow">💾 บันทึก</button>
+            </div>
+          </div>
+          <div id="checkin-list-container" class="divide-y divide-slate-100"></div>
+        </div>
+      </section>
+
+      <!-- หน้าอื่นๆ ซ่อนไว้โดย default -->
+      <section id="sec-daily" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 flex justify-between">
+          <h2 class="font-bold text-slate-800">📅 รายละเอียดวัน</h2>
+          <select id="select-daily-record" onchange="renderDailyDetail()" class="bg-slate-50 border rounded-xl px-3 py-2 text-sm outline-none"></select>
+        </div>
+        <div id="daily-detail-content"></div>
+      </section>
+
+      <section id="sec-records" class="hidden space-y-6">
+        <div id="records-list" class="space-y-4"></div>
+      </section>
+
+      <section id="sec-stats" class="hidden space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 w-full h-64"><canvas id="chartStatus"></canvas></div>
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 w-full h-64"><canvas id="chartRounds"></canvas></div>
+        </div>
+      </section>
+
+      <section id="sec-personnel" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold">จัดการรายชื่อ</h2>
+            <button onclick="adminAction(openAddPersonnelModal)" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ เพิ่ม</button>
+          </div>
+          <table class="w-full text-left text-sm"><tbody id="personnel-table-body" class="divide-y"></tbody></table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <!-- Modal Admin Login -->
+  <div id="modal-admin-login" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-bold text-center">🔑 เข้าสู่ระบบแอดมิน</h3>
+      <input type="password" id="admin-pass-input" placeholder="รหัส: admin123" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+      <div class="flex gap-2">
+        <button onclick="toggleAdminModal()" class="w-1/2 py-2.5 rounded-xl border text-xs font-bold">ยกเลิก</button>
+        <button onclick="handleAdminLogin()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Add Personnel -->
+  <div id="modal-add-personnel" class="hidden fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4">
+      <h3 class="font-bold border-b pb-2">➕ เพิ่มรายชื่อใหม่</h3>
+      <input type="text" id="input-no" placeholder="เลขที่" class="w-full border rounded-xl p-2.5 text-sm mb-2">
+      <input type="text" id="input-name" placeholder="ชื่อ-สกุล" class="w-full border rounded-xl p-2.5 text-sm mb-2">
+      <input type="text" id="input-class" placeholder="ชั้นเรียน" class="w-full border rounded-xl p-2.5 text-sm mb-2">
+      <input type="text" id="input-dept" placeholder="สังกัด" class="w-full border rounded-xl p-2.5 text-sm">
+      <div class="flex gap-2 mt-4">
+        <button onclick="closeAddPersonnelModal()" class="w-1/2 py-2 border rounded-xl text-xs font-bold">ยกเลิก</button>
+        <button onclick="handleAddPersonnel()" class="w-1/2 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    // ----------------------------------------------------
+    // ฟังก์ชันสลับแอประหว่าง หน้าหลัก กับ ระบบเช็คชื่อ
+    // ----------------------------------------------------
+    function switchAppPage(pageId) {
+      document.getElementById('page-main').classList.add('page-hidden');
+      document.getElementById('page-attendance').classList.add('page-hidden');
+      document.getElementById(pageId).classList.remove('page-hidden');
+      
+      // ถ้าเปิดหน้าระบบเช็คชื่อ ให้เตรียมข้อมูล
+      if (pageId === 'page-attendance') {
+        document.getElementById('checkin-date').valueAsDate = new Date();
+        renderCheckinList();
+        renderPersonnelTable();
+        renderRecordsList();
+        if(!chartStatusInstance) initCharts(); // วาดกราฟเฉพาะตอนเปิดหน้า
+      }
+    }
+
+    // ----------------------------------------------------
+    // ระบบเช็คชื่อ (ตรรกะเดิมทั้งหมด)
+    // ----------------------------------------------------
+    const defaultPersonnel = [
+      { id: 1, no: "01", name: "นายกิตติศักดิ์ เจริญพร", class: "ม.5/1", dept: "ฝ่ายบริหาร" },
+      { id: 2, no: "02", name: "นางสาวณิชาภัทร แก้วมณี", class: "ม.5/2", dept: "ฝ่ายกิจกรรม" }
+    ];
+
+    let isAdmin = false;
+    let personnelList = JSON.parse(localStorage.getItem('hwp_personnel')) || defaultPersonnel;
+    let attendanceRecords = JSON.parse(localStorage.getItem('hwp_records')) || [];
+    let currentStatuses = {};
+    let chartStatusInstance = null, chartRoundsInstance = null;
+
+    window.onload = () => { updateBadges(); };
+
+    // --- Tab Switching ---
+    function switchTab(tabName) {
+      ['checkin', 'daily', 'records', 'stats', 'personnel'].forEach(t => {
+        document.getElementById('sec-' + t).classList.add('hidden');
+        document.getElementById('tab-' + t).className = 'px-4 py-2.5 rounded-xl text-blue-100 hover:bg-white/10 flex items-center gap-2';
+      });
+      document.getElementById('sec-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).className = 'px-4 py-2.5 rounded-xl bg-white text-blue-900 font-bold shadow flex items-center gap-2';
+      if (tabName === 'stats') updateStats();
+    }
+
+    // --- Admin ---
+    function adminAction(callback) {
+      if (!isAdmin) { alert("🔒 เฉพาะแอดมินเท่านั้น"); toggleAdminModal(); return; }
+      callback();
+    }
+    function toggleAdminModal() { document.getElementById('modal-admin-login').classList.toggle('hidden'); }
+    function handleAdminLogin() {
+      if (document.getElementById('admin-pass-input').value === 'admin123') {
+        isAdmin = true;
+        document.getElementById('admin-status-text').innerText = 'แอดมินเข้าสู่ระบบแล้ว';
+        document.getElementById('btn-admin-auth').innerText = 'ออกจากระบบ';
+        document.getElementById('btn-admin-auth').onclick = () => { isAdmin = false; location.reload(); };
+        toggleAdminModal(); alert("✅ สำเร็จ");
+      } else { alert("❌ รหัสผิด"); }
+    }
+
+    // --- Personnel & Checkin ---
+    function openAddPersonnelModal() { document.getElementById('modal-add-personnel').classList.remove('hidden'); }
+    function closeAddPersonnelModal() { document.getElementById('modal-add-personnel').classList.add('hidden'); }
+    function handleAddPersonnel() {
+      personnelList.push({
+        id: Date.now(),
+        no: document.getElementById('input-no').value,
+        name: document.getElementById('input-name').value,
+        class: document.getElementById('input-class').value,
+        dept: document.getElementById('input-dept').value
+      });
+      localStorage.setItem('hwp_personnel', JSON.stringify(personnelList));
+      closeAddPersonnelModal(); renderPersonnelTable(); renderCheckinList(); updateBadges();
+    }
+    
+    function renderPersonnelTable() {
+      document.getElementById('personnel-table-body').innerHTML = personnelList.map(p => `
+        <tr><td class="p-3">${p.no}</td><td class="p-3">${p.name}</td><td class="p-3">${p.class}</td></tr>
+      `).join('');
+    }
+
+    function renderCheckinList() {
+      document.getElementById('checkin-list-container').innerHTML = personnelList.map(p => {
+        const status = currentStatuses[p.id] || 'ขาด';
+        return `
+          <div class="py-3 flex justify-between items-center">
+            <div><span class="font-bold text-blue-600">[${p.no}]</span> ${p.name}</div>
+            <div class="space-x-1">
+              ${['มา', 'สาย', 'ลา', 'ขาด'].map(st => `
+                <button onclick="changeStatus(${p.id}, '${st}')" class="px-3 py-1 rounded-lg text-xs font-bold ${status === st ? 'bg-blue-600 text-white' : 'bg-slate-100'}">${st}</button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function changeStatus(id, st) { if(isAdmin){ currentStatuses[id] = st; renderCheckinList(); }else{ adminAction(); } }
+    function setAllStatus(st) { personnelList.forEach(p => currentStatuses[p.id] = st); renderCheckinList(); }
+
+    function saveAttendanceRecord() {
+      if(!personnelList.length) return;
+      attendanceRecords.unshift({
+        id: Date.now(),
+        date: document.getElementById('checkin-date').value,
+        activity: document.getElementById('checkin-activity').value,
+        details: personnelList.map(p => ({ ...p, status: currentStatuses[p.id] || 'ขาด' }))
+      });
+      localStorage.setItem('hwp_records', JSON.stringify(attendanceRecords));
+      renderRecordsList(); updateBadges(); alert("บันทึกสำเร็จ!"); switchTab('records');
+    }
+
+    function renderRecordsList() {
+      const recs = document.getElementById('records-list');
+      const sel = document.getElementById('select-daily-record');
+      if(!attendanceRecords.length) { recs.innerHTML = "ยังไม่มีประวัติ"; return; }
+      sel.innerHTML = attendanceRecords.map(r => `<option value="${r.id}">${r.date} - ${r.activity}</option>`).join('');
+      recs.innerHTML = attendanceRecords.map(r => `<div class="p-4 bg-white border rounded-xl mb-2">📅 ${r.date} | ${r.activity}</div>`).join('');
+      renderDailyDetail();
+    }
+    
+    function renderDailyDetail() {
+      const id = document.getElementById('select-daily-record').value;
+      const rec = attendanceRecords.find(r => String(r.id) === String(id));
+      if(!rec) return;
+      document.getElementById('daily-detail-content').innerHTML = `
+        <div class="bg-white p-6 border rounded-xl">
+          <h3 class="font-bold mb-4">${rec.activity} (${rec.date})</h3>
+          <table class="w-full text-sm">
+            ${rec.details.map(d => `<tr><td class="py-2">${d.name}</td><td>${d.status}</td></tr>`).join('')}
+          </table>
+        </div>`;
+    }
+
+    function initCharts() {
+      chartStatusInstance = new Chart(document.getElementById('chartStatus').getContext('2d'), { type: 'doughnut', data: { labels: ['มา','สาย','ลา','ขาด'], datasets: [{ data: [1,0,0,0], backgroundColor: ['#10b981','#f59e0b','#0ea5e9','#f43f5e'] }] } });
+      chartRoundsInstance = new Chart(document.getElementById('chartRounds').getContext('2d'), { type: 'bar', data: { labels: ['รอบ 1'], datasets: [{ label: '% การมา', data: [100] }] } });
+    }
+    function updateStats() { if(chartStatusInstance) chartStatusInstance.update(); }
+    function updateBadges() {
+      document.getElementById('badge-personnel-count').innerText = personnelList.length;
+      document.getElementById('badge-records-count').innerText = attendanceRecords.length;
+    }
+  </script>
+</body>
+</html>
