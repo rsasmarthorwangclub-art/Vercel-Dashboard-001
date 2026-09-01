@@ -675,6 +675,96 @@
         alert("❌ ไม่สามารถดาวน์โหลดไฟล์ได้: " + err.message);
       }
     }
+    // เปิด-ปิด หน้าต่าง Modal
+function openAttendanceModal() {
+  document.getElementById('attendance-modal').classList.remove('hidden');
+}
+
+function closeAttendanceModal() {
+  document.getElementById('attendance-modal').classList.add('hidden');
+}
+
+// ข้อมูลและระบบเช็คชื่อ
+let studentList = JSON.parse(localStorage.getItem('hwp_personnel')) || [
+  { id: 1, no: "13882", name: "นายกิตติกร ไทยมานิตย์", class: "ม.5/3" },
+  { id: 2, no: "13894", name: "นางสาวกวินธิดา สรสุวรรณ", class: "ม.5/3" },
+  { id: 3, no: "13896", name: "นางสาวขวัญจิรา บุญมานะ", class: "ม.5/3" }
+];
+
+let currentAttendance = {};
+document.getElementById('chk-date').valueAsDate = new Date();
+
+function renderAttendanceList() {
+  const container = document.getElementById('attendance-list-container');
+  if (!studentList.length) {
+    container.innerHTML = `<div class="py-4 text-center text-slate-400 text-xs">ไม่มีรายชื่อนักเรียน</div>`;
+    return;
+  }
+
+  container.innerHTML = studentList.map(st => {
+    const status = currentAttendance[st.id] || 'ขาด';
+    return `
+      <div class="py-2.5 flex items-center justify-between gap-2 text-xs">
+        <div>
+          <span class="font-bold text-blue-600 mr-1">[${st.no}]</span>
+          <span class="font-bold text-slate-800">${st.name}</span>
+        </div>
+        <div class="flex items-center gap-1">
+          ${['มา', 'สาย', 'ลา', 'ขาด'].map(type => `
+            <button onclick="setSingleStatus(${st.id}, '${type}')" class="px-2.5 py-1 rounded-lg font-bold transition ${
+              status === type ? getBadgeColor(type) : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }">
+              ${type}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getBadgeColor(type) {
+  switch(type) {
+    case 'มา': return 'bg-emerald-500 text-white';
+    case 'สาย': return 'bg-amber-500 text-white';
+    case 'ลา': return 'bg-sky-500 text-white';
+    case 'ขาด': return 'bg-rose-500 text-white';
+  }
+}
+
+function setSingleStatus(id, statusType) {
+  currentAttendance[id] = statusType;
+  renderAttendanceList();
+}
+
+function setAllAttendanceStatus(statusType) {
+  studentList.forEach(st => currentAttendance[st.id] = statusType);
+  renderAttendanceList();
+}
+
+function saveAttendanceData() {
+  const date = document.getElementById('chk-date').value;
+  const activity = document.getElementById('chk-activity').value;
+
+  const record = {
+    id: Date.now(),
+    date,
+    activity,
+    records: studentList.map(st => ({
+      id: st.id,
+      name: st.name,
+      status: currentAttendance[st.id] || 'ขาด'
+    }))
+  };
+
+  let savedRecords = JSON.parse(localStorage.getItem('hwp_records')) || [];
+  savedRecords.unshift(record);
+  localStorage.setItem('hwp_records', JSON.stringify(savedRecords));
+
+  closeAttendanceModal();
+}
+
+renderAttendanceList();
   </script>
   <!-- 📋 Popup Modal ระบบเช็คชื่อ -->
 <div id="attendance-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
@@ -734,7 +824,3 @@
 </div>
 </body>
 </html>
-
-  // เริ่มทำงาน Render ทันทีที่โหลด
-  renderAttendanceList();
-</script>
