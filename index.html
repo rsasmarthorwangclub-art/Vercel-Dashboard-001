@@ -46,7 +46,6 @@
   <header class="bg-blue-900/95 backdrop-blur-md text-white shadow-lg sticky top-0 z-50 border-b border-blue-700">
     <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-4">
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('activities')">
-        <!-- โลโก้ R-Sa Smart HWP -->
         <div class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden p-0.5 border-2 border-amber-400">
           <img src="https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png" alt="R-Sa Smart HWP Logo" class="w-full h-full object-contain">
         </div>
@@ -60,8 +59,7 @@
       <div class="flex space-x-2 text-sm items-center flex-wrap">
         <button onclick="switchTab('activities')" class="px-3 py-2 rounded-full hover:bg-white/10 transition font-medium">หน้าหลัก</button>
         <button onclick="checkAdminAuth('add-activity')" class="px-3 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-full font-bold shadow transition">✨ สร้างกิจกรรม</button>
-        <button onclick="switchTab('checkin')" class="px-3 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold shadow transition">📋 ระบบเช็คชื่อ</button>
-        <button onclick="checkAdminAuth('admin')" class="px-3 py-2 bg-blue-800 rounded-full hover:bg-blue-700 transition font-medium border border-blue-600">🛡️ จัดการข้อมูล</button>
+        <button onclick="checkAdminAuth('admin')" class="px-3 py-2 bg-blue-800 rounded-full hover:bg-blue-700 transition font-medium border border-blue-600">🛡️ จัดการข้อมูล & เช็คชื่อ</button>
         <span id="admin-status-badge" class="hidden text-xs bg-emerald-500 text-white px-3 py-1 rounded-full font-bold">แอดมินล็อกอินแล้ว</span>
       </div>
     </div>
@@ -164,7 +162,7 @@
       </div>
     </section>
 
-    <!-- 3. หน้าฟอร์มสมัครกิจกรรม -->
+    <!-- 3. หน้าฟอร์มสมัครกิจกรรม (สำหรับผู้ใช้งานทั่วไป) -->
     <section id="sec-register" class="hidden space-y-4">
       <div class="glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto text-gray-800">
         <h2 class="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-2 flex items-center gap-2">
@@ -215,141 +213,12 @@
       </div>
     </section>
 
-    <!-- 4. หน้าใหม่: ระบบเช็คชื่อตามดีไซน์ต้นฉบับ (พร้อมปุ่มเพิ่มรายชื่อ) -->
-    <section id="sec-checkin" class="hidden space-y-6 sarabun-font">
-      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl text-gray-800 space-y-6">
-        
-        <!-- Header Banner เตือนสถานะเริ่มต้น -->
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-start space-x-3">
-          <span class="text-xl">❌</span>
-          <div class="text-sm">
-            <span class="font-bold">สถานะเริ่มต้นก่อนเช็คชื่อสำหรับทุกคนจะถูกตั้งค่าเป็น "ขาด" อัตโนมัติ</span><br>
-            กดปุ่มเปลี่ยนสถานะ "มา", "สาย", หรือ "ลา" ให้บุคลากรที่มาร่วม หรือใช้ปุ่ม "มาทั้งหมด" ด้านบน
-          </div>
-        </div>
-
-        <!-- Section 1: กำหนดข้อมูลกิจกรรม -->
-        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-4">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-              <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">1</span>
-              <h2 class="font-bold text-lg text-gray-800">กำหนดข้อมูลกิจกรรม (Select Date, Activity & Location)</h2>
-            </div>
-            <span class="text-sm text-gray-500" id="current-date-label">1 กันยายน 2569</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-gray-600 mb-1">📅 เลือกวันที่ (Date)</label>
-              <input type="date" id="checkin-date" value="2026-09-01" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-600 mb-1">📚 เลือกรูปแบบกิจกรรม</label>
-              <select id="checkin-activity-select" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                <option>ประชุมองค์กร / สภานักเรียน</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-600 mb-1">📍 เลือกวิชา / สถานที่</label>
-              <input type="text" id="checkin-location" value="ห้องจริยธรรม" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 2: รายชื่อบุคลากรและทำเครื่องหมายเช็คชื่อ -->
-        <div class="space-y-6">
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 pb-4">
-            <div class="flex items-center space-x-2">
-              <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">2</span>
-              <h2 class="font-bold text-lg text-gray-800">รายชื่อบุคลากรและทำเครื่องหมายเช็คชื่อ</h2>
-            </div>
-            
-            <!-- ปุ่มควบคุมการเช็คชื่อ + ปุ่มเพิ่มรายชื่อตามที่ขอ -->
-            <div class="flex flex-wrap items-center gap-2">
-              <button onclick="openAddPersonModal()" class="bg-blue-600 text-white text-xs md:text-sm px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition flex items-center gap-1 font-bold">
-                ➕ เพิ่มรายชื่อ
-              </button>
-              <span class="text-xs text-gray-400">| เลือกทั้งหมด:</span>
-              <button class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-emerald-100">มาทั้งหมด</button>
-              <button class="bg-amber-50 text-amber-600 border border-amber-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-amber-100">สายทั้งหมด</button>
-              <button class="bg-rose-50 text-rose-600 border border-rose-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-rose-100">ขาดทั้งหมด</button>
-            </div>
-          </div>
-
-          <!-- สรุปจำนวนสถานะ -->
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
-            <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200">
-              <div class="text-xs text-gray-500 mb-1">บุคลากรทั้งหมด</div>
-              <div class="text-lg font-bold text-gray-800">5 คน</div>
-            </div>
-            <div class="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100">
-              <div class="text-xs text-emerald-600 mb-1">มา</div>
-              <div class="text-lg font-bold text-emerald-600">0 คน</div>
-            </div>
-            <div class="bg-amber-50/50 p-3 rounded-2xl border border-amber-100">
-              <div class="text-xs text-amber-600 mb-1">สาย</div>
-              <div class="text-lg font-bold text-amber-600">0 คน</div>
-            </div>
-            <div class="bg-sky-50/50 p-3 rounded-2xl border border-sky-100">
-              <div class="text-xs text-sky-600 mb-1">ลา</div>
-              <div class="text-lg font-bold text-sky-600">0 คน</div>
-            </div>
-            <div class="bg-rose-50/50 p-3 rounded-2xl border border-rose-100 col-span-2 md:col-span-1">
-              <div class="text-xs text-rose-600 mb-1">ขาด</div>
-              <div class="text-lg font-bold text-rose-600">5 คน</div>
-            </div>
-          </div>
-
-          <!-- รายชื่อบุคคล (ดีไซน์ตัวอย่างตามภาพ) -->
-          <div class="divide-y divide-gray-100">
-            <div class="py-3 flex justify-between items-center">
-              <div>
-                <span class="text-blue-600 font-bold text-sm">[13882] นายกิตติกร ไทยมานิย์</span>
-                <p class="text-xs text-gray-400">ม.5/3 • ที่ปรึกษาอาวุโสองค์กร</p>
-              </div>
-              <div class="flex space-x-1.5">
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
-                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
-              </div>
-            </div>
-            <div class="py-3 flex justify-between items-center">
-              <div>
-                <span class="text-blue-600 font-bold text-sm">[13894] นางสาวกวินริดา สรสุวรรณ</span>
-                <p class="text-xs text-gray-400">ม.5/3 • ส่วนงานงบประมาณ</p>
-              </div>
-              <div class="flex space-x-1.5">
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
-                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
-              </div>
-            </div>
-            <div class="py-3 flex justify-between items-center">
-              <div>
-                <span class="text-blue-600 font-bold text-sm">[13896] นางสาวขวัญจิรา บุญมานะ</span>
-                <p class="text-xs text-gray-400">ม.5/3 • ศูนย์อบรมและพัฒนาบุคลากร</p>
-              </div>
-              <div class="flex space-x-1.5">
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
-                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
-                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 5. ระบบหลังบ้าน: หน้ารวมการ์ดกิจกรรม (Admin Dashboard) -->
+    <!-- 4. ระบบหลังบ้าน: หน้ารวมการ์ดกิจกรรม (Admin Dashboard) -->
     <section id="sec-admin" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-4 text-gray-800">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">🛡️ Dashboard จัดการข้อมูล</h2>
-          <p class="text-sm text-gray-600">เลือกกิจกรรมที่ต้องการตรวจสอบรายชื่อ เช็คชื่อ และจัดการข้อมูล</p>
+          <h2 class="text-2xl font-bold text-gray-900">🛡️ Dashboard จัดการข้อมูล & เช็คชื่อ</h2>
+          <p class="text-sm text-gray-600">เลือกกิจกรรมที่ต้องการจัดการรายชื่อ เช็คชื่อ เพิ่มรายชื่อ และส่งออกข้อมูล</p>
         </div>
         <div class="flex items-center gap-3">
           <button onclick="switchTab('add-activity')" class="bg-amber-500 text-white font-bold px-4 py-3 rounded-2xl shadow hover:bg-amber-600 transition text-sm">✨ สร้างกิจกรรม</button>
@@ -362,8 +231,8 @@
       </div>
     </section>
 
-    <!-- 6. ระบบหลังบ้าน: หน้าจัดการรายชื่อเฉพาะกิจกรรมที่เลือก -->
-    <section id="sec-admin-detail" class="hidden space-y-6">
+    <!-- 5. ระบบหลังบ้าน: หน้าจัดการรายชื่อ เช็คชื่อ และเพิ่มรายชื่อ (พร้อมกล่องเลื่อนดูรายชื่อ) -->
+    <section id="sec-admin-detail" class="hidden space-y-6 sarabun-font">
       <div class="flex items-center justify-between">
         <button onclick="switchTab('admin')" class="bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 backdrop-blur">
           <span>←</span> กลับไปหน้าเลือกกิจกรรม
@@ -372,7 +241,7 @@
       </div>
 
       <div id="admin-detail-container" class="space-y-6">
-        <!-- ข้อมูลจะถูกเติมเข้ามาผ่าน JavaScript -->
+        <!-- ข้อมูลรายละเอียดกิจกรรมและตารางรายชื่อแบบเลื่อนได้จะถูกเรนเดอร์มาที่นี่ -->
       </div>
     </section>
 
@@ -585,19 +454,46 @@
       }
     }
 
-    async function updateCheckInStatus(participantId, isChecked) {
+    // ฟังก์ชันสำหรับแอดมินเพิ่มรายชื่อเข้ากิจกรรมโดยตรง
+    async function adminAddParticipant(activityId) {
+      const prefix = prompt("กรอกคำนำหน้า (เช่น นาย, นางสาว):", "นาย");
+      if (prefix === null) return;
+      const firstName = prompt("กรอกชื่อจริง:");
+      if (!firstName) return;
+      const lastName = prompt("กรอกนามสกุล:");
+      if (!lastName) return;
+      const phone = prompt("กรอกเบอร์โทรศัพท์:", "-");
+      const school = prompt("กรอกระดับชั้นปีการศึกษา (เช่น ม.5/3):", "-");
+      const act = activeActivitiesData[activityId];
+
+      const newPerson = {
+        activity_id: activityId,
+        activity_title: act ? act.title : 'กิจกรรม',
+        prefix: prefix,
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone || '-',
+        school: school || '-',
+        checked_in: false
+      };
+
       try {
-        const { error } = await supabaseClient.from('participants').update({ checked_in: isChecked }).eq('id', participantId);
+        const { error } = await supabaseClient.from('participants').insert([newPerson]);
         if (error) throw error;
+        alert("➕ เพิ่มรายชื่อเรียบร้อยแล้ว!");
+        loadAdminDetail(activityId);
       } catch (err) {
-        alert("❌ ไม่สามารถบันทึกสถานะได้: " + err.message);
+        alert("❌ เพิ่มรายชื่อไม่สำเร็จ: " + err.message);
       }
     }
 
-    function openAddPersonModal() {
-      const name = prompt("กรอกชื่อ-นามสกุล บุคลากรที่ต้องการเพิ่ม:");
-      if (name) {
-        alert("✅ เพิ่มรายชื่อ " + name + " เรียบร้อยแล้ว (จำลองการเพิ่มในหน้าจอ)");
+    async function updateCheckInStatus(participantId, isChecked, activityId) {
+      try {
+        const { error } = await supabaseClient.from('participants').update({ checked_in: isChecked }).eq('id', participantId);
+        if (error) throw error;
+        // รีเฟรชหน้าสถิติเบาๆ หรือปล่อยไว้เพราะอัปเดตฐานข้อมูลทันทีแล้ว
+      } catch (err) {
+        alert("❌ ไม่สามารถบันทึกสถานะได้: " + err.message);
       }
     }
 
@@ -643,7 +539,7 @@
               </div>
               <div class="p-5 pt-0 grid grid-cols-2 gap-2">
                 <button onclick="switchTab('admin-detail', '${act.id}')" class="btn-primary-custom text-white py-3 rounded-xl text-sm font-bold shadow text-center">
-                  📂 จัดการรายชื่อ
+                  📂 จัดการ & เช็คชื่อ
                 </button>
                 <button onclick="deleteActivity('${act.id}', '${encodeURIComponent(act.title)}')" class="bg-red-100 hover:bg-red-200 text-red-600 py-3 rounded-xl text-sm font-bold transition text-center">
                   🗑️ ลบกิจกรรม
@@ -668,11 +564,12 @@
 
         const container = document.getElementById('admin-detail-container');
         const count = participants.length;
+        const checkedCount = participants.filter(p => p.checked_in).length;
         const imgUrl = act.image_url || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80';
 
         let participantsRows = '';
         if (count === 0) {
-          participantsRows = `<tr><td colspan="5" class="p-6 text-center text-gray-400 text-sm">ยังไม่มีผู้สมัครในกิจกรรมนี้</td></tr>`;
+          participantsRows = `<tr><td colspan="5" class="p-8 text-center text-gray-400 text-sm">ยังไม่มีรายชื่อในกิจกรรมนี้ กดปุ่ม "+ เพิ่มรายชื่อ" ด้านบนเพื่อเพิ่มข้อมูลได้เลย</td></tr>`;
         } else {
           participants.forEach((p, pIndex) => {
             const prefixStr = p.prefix ? p.prefix : '';
@@ -683,8 +580,8 @@
                 <td class="p-3 font-medium text-gray-900">${prefixStr} ${p.first_name} ${p.last_name}</td>
                 <td class="p-3 text-center">
                   <label class="inline-flex items-center gap-1.5 cursor-pointer bg-blue-50 px-3 py-1 rounded-lg border border-blue-100 text-blue-700 font-semibold text-xs">
-                    <input type="checkbox" ${isChecked} onchange="updateCheckInStatus('${p.id}', this.checked)" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                    <span>Confirm / มาถึง</span>
+                    <input type="checkbox" ${isChecked} onchange="updateCheckInStatus('${p.id}', this.checked, '${activityId}')" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <span>มาแล้ว</span>
                   </label>
                 </td>
                 <td class="p-3 text-gray-600">📱 ${p.phone}</td>
@@ -701,14 +598,17 @@
                 <img src="${imgUrl}" class="w-full h-full object-cover">
               </div>
               <div class="flex-grow space-y-2 w-full">
-                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">รายละเอียดกิจกรรมหลังบ้าน</span>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">ระบบจัดการและเช็คชื่อ</span>
                 <h2 class="text-2xl font-bold text-gray-900">${act.title}</h2>
                 <p class="text-sm text-gray-600 flex items-center gap-2"><span>📅</span> ${act.event_date || 'ไม่ระบุวันที่'}</p>
                 <p class="text-sm text-gray-600 flex items-center gap-2"><span>📍</span> ${act.location || 'ไม่ระบุสถานที่'}</p>
                 <div class="pt-2 flex items-center gap-3 flex-wrap">
                   <div class="bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-sm shadow">
-                    👥 ผู้สมัครทั้งหมด: <span class="text-lg">${count}</span> คน
+                    👥 ทั้งหมด: <span class="text-lg">${count}</span> คน (มาแล้ว: ${checkedCount} คน)
                   </div>
+                  <button onclick="adminAddParticipant('${act.id}')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm shadow transition flex items-center gap-1.5">
+                    ➕ เพิ่มรายชื่อ
+                  </button>
                   <button onclick="exportToExcel('${act.id}', '${encodeURIComponent(act.title)}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm shadow transition flex items-center gap-1.5">
                     📊 โหลด Excel
                   </button>
@@ -717,16 +617,17 @@
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-lg font-bold text-gray-900">รายชื่อผู้เข้าร่วมและเช็คชื่อ</h3>
-              <div class="overflow-x-auto rounded-2xl border border-gray-200">
-                <table class="w-full text-left border-collapse">
-                  <thead>
-                    <tr class="bg-gray-50 text-xs font-bold text-gray-500 uppercase">
-                      <th class="p-3 text-center w-12">#</th>
-                      <th class="p-3">ชื่อ-นามสกุล</th>
-                      <th class="p-3 text-center">สถานะเข้าร่วม</th>
-                      <th class="p-3">เบอร์โทรศัพท์</th>
-                      <th class="p-3">ระดับชั้นปีการศึกษา</th>
+              <h3 class="text-lg font-bold text-gray-900">รายชื่อผู้เข้าร่วมและเช็คชื่อ (เลื่อนดูรายชื่อด้านล่างได้)</h3>
+              <!-- กำหนดความสูงและเพิ่ม Overflow-y-auto สำหรับทำกล่องเลื่อนดูรายชื่อ -->
+              <div class="max-h-[400px] overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-inner">
+                <table class="w-full text-left border-collapse sticky top-0">
+                  <thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase sticky top-0 z-10 shadow-sm">
+                    <tr>
+                      <th class="p-3 text-center w-12 bg-gray-50">#</th>
+                      <th class="p-3 bg-gray-50">ชื่อ-นามสกุล</th>
+                      <th class="p-3 text-center bg-gray-50">สถานะเช็คชื่อ</th>
+                      <th class="p-3 bg-gray-50">เบอร์โทรศัพท์</th>
+                      <th class="p-3 bg-gray-50">ระดับชั้น/ตำแหน่ง</th>
                     </tr>
                   </thead>
                   <tbody>${participantsRows}</tbody>
@@ -755,7 +656,7 @@
           return;
         }
 
-        let csvContent = "\uFEFFลำดับ,คำนำหน้า,ชื่อ,นามสกุล,เบอร์โทรศัพท์,ระดับชั้นปีการศึกษา,สถานะมาถึง,วันที่สมัคร\n";
+        let csvContent = "\uFEFFลำดับ,คำนำหน้า,ชื่อ,นามสกุล,เบอร์โทรศัพท์,ระดับชั้น,สถานะมาถึง,วันที่สมัคร\n";
         data.forEach((p, index) => {
           const row = [
             index + 1,
@@ -764,7 +665,7 @@
             `"${p.last_name || ''}"`,
             `"${p.phone || ''}"`,
             `"${p.school || '-'}"`,
-            `"${p.checked_in ? 'มาถึงแล้ว' : 'ยังไม่มา'}"`,
+            `"${p.checked_in ? 'มาแล้ว' : 'ยังไม่มา'}"`,
             `"${new Date(p.created_at).toLocaleString('th-TH')}"`
           ];
           csvContent += row.join(",") + "\n";
