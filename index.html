@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R-SA SMART HWP - เครือข่ายเยาวชนจิตอาสาแห่งหอวัง ปทุมธานี</title>
+  
+  <!-- Tailwind CSS & Supabase -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body { 
+      font-family: 'Kanit', sans-serif; 
+      background-color: #2563eb;
+      background-image: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
+      background-attachment: fixed;
+    }
+    .sarabun-font {
+      font-family: 'Sarabun', sans-serif;
+    }
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary-custom {
+      background: linear-gradient(to right, #1d4ed8, #2563eb);
+      transition: all 0.3s ease;
+    }
+    .btn-primary-custom:hover {
+      background: linear-gradient(to right, #1e40af, #1d4ed8);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+    .aspect-video-custom {
+      aspect-ratio: 16 / 9;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <header class="bg-blue-900/95 backdrop-blur-md text-white shadow-lg sticky top-0 z-50 border-b border-blue-700">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-4">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('activities')">
+        <!-- โลโก้ R-Sa Smart HWP -->
+        <div class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden p-0.5 border-2 border-amber-400">
+          <img src="https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png" alt="R-Sa Smart HWP Logo" class="w-full h-full object-contain">
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-wider text-white leading-tight">
+            R-Sa Smart <span class="text-cyan-300">HWP</span>
+          </h1>
+          <p class="text-[11px] text-blue-200 font-light tracking-wide">หอวัง ปทุมธานี</p>
+        </div>
+      </div>
+      <div class="flex space-x-2 text-sm items-center flex-wrap">
+        <button onclick="switchTab('activities')" class="px-3 py-2 rounded-full hover:bg-white/10 transition font-medium">หน้าหลัก</button>
+        <button onclick="checkAdminAuth('add-activity')" class="px-3 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-full font-bold shadow transition">✨ สร้างกิจกรรม</button>
+        <button onclick="switchTab('checkin')" class="px-3 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold shadow transition">📋 ระบบเช็คชื่อ</button>
+        <button onclick="checkAdminAuth('admin')" class="px-3 py-2 bg-blue-800 rounded-full hover:bg-blue-700 transition font-medium border border-blue-600">🛡️ จัดการข้อมูล</button>
+        <span id="admin-status-badge" class="hidden text-xs bg-emerald-500 text-white px-3 py-1 rounded-full font-bold">แอดมินล็อกอินแล้ว</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto w-full flex-grow p-4 md:p-6 lg:py-8 flex flex-col justify-center">
+
+    <!-- 1. หน้ากิจกรรมทั้งหมด (หน้าแรก) -->
+    <section id="sec-activities" class="space-y-8">
+      <div class="bg-blue-900/80 backdrop-blur rounded-3xl p-8 md:p-12 text-center text-white shadow-xl border border-blue-700">
+        <h2 class="text-3xl md:text-5xl font-extrabold mb-3">กิจกรรมจิตอาสา</h2>
+        <p class="text-base md:text-lg text-blue-100 font-light max-w-2xl mx-auto">
+          ร่วมเป็นส่วนหนึ่งในเครือข่ายเยาวชนจิตอาสาแห่งหอวัง ปทุมธานี พัฒนาศักยภาพและร่วมสร้างสรรค์สังคม
+        </p>
+      </div>
+
+      <div class="flex justify-between items-center border-b border-blue-400/40 pb-3 text-white">
+        <h3 class="text-2xl font-bold flex items-center gap-2">
+          <span class="text-cyan-300">❖</span> กิจกรรมล่าสุด
+        </h3>
+      </div>
+      
+      <div id="activity-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-white text-center col-span-full py-10 font-medium">⏳ กำลังโหลดข้อมูลกิจกรรม...</p>
+      </div>
+    </section>
+
+    <!-- 1.1 หน้าเข้าสู่ระบบแอดมิน -->
+    <section id="sec-admin-login" class="hidden flex justify-center items-center py-6">
+      <div class="glass-card rounded-3xl p-8 md:p-10 w-full max-w-md text-gray-800">
+        <div class="text-center mb-6">
+          <div class="w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
+            <span class="text-2xl font-bold">★</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900">เข้าสู่ระบบ | Sign in</h2>
+          <div class="mt-2 inline-block bg-red-50 border border-red-100 px-4 py-1 rounded-md text-red-600 font-semibold text-sm tracking-wide shadow-sm">
+            R-SA Smart Admin
+          </div>
+        </div>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Gmail แอดมิน *</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 text-lg">✉️</span>
+              <input type="email" id="login-email" required placeholder="admin@gmail.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-gray-800 text-sm outline-none focus:border-blue-500 focus:bg-white transition">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">รหัสผ่าน *</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 text-lg">🔑</span>
+              <input type="password" id="login-password" required placeholder="กรุณาระบุรหัสผ่าน" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-gray-800 text-sm outline-none focus:border-blue-500 focus:bg-white transition">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full btn-primary-custom text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 mt-2">
+            <span>Sign in</span>
+            <span>→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. หน้าสร้างกิจกรรมใหม่ -->
+    <section id="sec-add-activity" class="hidden space-y-4">
+      <div class="glass-card rounded-3xl p-6 md:p-8 max-w-xl mx-auto text-gray-800">
+        <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+          <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <span class="text-amber-500">✨</span> สร้างประกาศกิจกรรมใหม่
+          </h2>
+          <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 font-bold px-3 py-1.5 rounded-lg hover:bg-red-200 transition">ออกจากระบบ</button>
+        </div>
+        <form id="activityForm" onsubmit="handleAddActivity(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">ชื่อกิจกรรมหลัก *</label>
+            <input type="text" id="act-title" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">วันที่จัดกิจกรรม</label>
+              <input type="text" id="act-date" placeholder="เช่น 12 - 16 ต.ค. 69" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">สถานที่</label>
+              <input type="text" id="act-location" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">อัปโหลดรูปภาพหน้าปกกิจกรรม (แนะนำขนาด 16:9) *</label>
+            <input type="file" id="act-image-file" accept="image/*" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <p class="text-xs text-gray-500 mt-1">รองรับไฟล์ภาพ (JPG, PNG, WEBP)</p>
+          </div>
+          <button type="submit" id="submit-btn" class="w-full btn-primary-custom text-white font-bold py-3.5 rounded-xl shadow-lg mt-2">
+            ยืนยันสร้างกิจกรรม
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. หน้าฟอร์มสมัครกิจกรรม -->
+    <section id="sec-register" class="hidden space-y-4">
+      <div class="glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto text-gray-800">
+        <h2 class="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-2 flex items-center gap-2">
+          <span class="text-blue-600">📝</span> ลงทะเบียนเข้าร่วมกิจกรรม
+        </h2>
+        <div class="mb-6 bg-blue-50 border border-blue-100 p-4 rounded-xl">
+          <p class="text-xs text-blue-600 font-semibold uppercase">กำลังสมัครเข้าร่วม:</p>
+          <p id="display-act-title" class="text-lg font-bold text-blue-900">-</p>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+          <input type="hidden" id="reg-activity-id">
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">คำนำหน้าชื่อ *</label>
+              <select id="reg-prefix" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+                <option value="">-- เลือกคำนำหน้า --</option>
+                <option value="นาย">นาย</option>
+                <option value="นางสาว">นางสาว</option>
+                <option value="เด็กชาย">เด็กชาย</option>
+                <option value="เด็กหญิง">เด็กหญิง</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">ชื่อ *</label>
+              <input type="text" id="reg-firstname" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">นามสกุล *</label>
+              <input type="text" id="reg-lastname" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">เบอร์โทรศัพท์ *</label>
+            <input type="tel" id="reg-phone" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">ระดับชั้นปีการศึกษา</label>
+            <input type="text" id="reg-school" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none text-sm">
+          </div>
+          <button type="submit" class="w-full btn-primary-custom text-white font-bold py-3.5 rounded-xl shadow-lg mt-2">
+            ยืนยันการสมัคร
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4. หน้าใหม่: ระบบเช็คชื่อตามดีไซน์ต้นฉบับ (พร้อมปุ่มเพิ่มรายชื่อ) -->
+    <section id="sec-checkin" class="hidden space-y-6 sarabun-font">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl text-gray-800 space-y-6">
+        
+        <!-- Header Banner เตือนสถานะเริ่มต้น -->
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-start space-x-3">
+          <span class="text-xl">❌</span>
+          <div class="text-sm">
+            <span class="font-bold">สถานะเริ่มต้นก่อนเช็คชื่อสำหรับทุกคนจะถูกตั้งค่าเป็น "ขาด" อัตโนมัติ</span><br>
+            กดปุ่มเปลี่ยนสถานะ "มา", "สาย", หรือ "ลา" ให้บุคลากรที่มาร่วม หรือใช้ปุ่ม "มาทั้งหมด" ด้านบน
+          </div>
+        </div>
+
+        <!-- Section 1: กำหนดข้อมูลกิจกรรม -->
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+              <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <h2 class="font-bold text-lg text-gray-800">กำหนดข้อมูลกิจกรรม (Select Date, Activity & Location)</h2>
+            </div>
+            <span class="text-sm text-gray-500" id="current-date-label">1 กันยายน 2569</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">📅 เลือกวันที่ (Date)</label>
+              <input type="date" id="checkin-date" value="2026-09-01" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">📚 เลือกรูปแบบกิจกรรม</label>
+              <select id="checkin-activity-select" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <option>ประชุมองค์กร / สภานักเรียน</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">📍 เลือกวิชา / สถานที่</label>
+              <input type="text" id="checkin-location" value="ห้องจริยธรรม" class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: รายชื่อบุคลากรและทำเครื่องหมายเช็คชื่อ -->
+        <div class="space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 pb-4">
+            <div class="flex items-center space-x-2">
+              <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <h2 class="font-bold text-lg text-gray-800">รายชื่อบุคลากรและทำเครื่องหมายเช็คชื่อ</h2>
+            </div>
+            
+            <!-- ปุ่มควบคุมการเช็คชื่อ + ปุ่มเพิ่มรายชื่อตามที่ขอ -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="openAddPersonModal()" class="bg-blue-600 text-white text-xs md:text-sm px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition flex items-center gap-1 font-bold">
+                ➕ เพิ่มรายชื่อ
+              </button>
+              <span class="text-xs text-gray-400">| เลือกทั้งหมด:</span>
+              <button class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-emerald-100">มาทั้งหมด</button>
+              <button class="bg-amber-50 text-amber-600 border border-amber-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-amber-100">สายทั้งหมด</button>
+              <button class="bg-rose-50 text-rose-600 border border-rose-200 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-rose-100">ขาดทั้งหมด</button>
+            </div>
+          </div>
+
+          <!-- สรุปจำนวนสถานะ -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+            <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200">
+              <div class="text-xs text-gray-500 mb-1">บุคลากรทั้งหมด</div>
+              <div class="text-lg font-bold text-gray-800">5 คน</div>
+            </div>
+            <div class="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100">
+              <div class="text-xs text-emerald-600 mb-1">มา</div>
+              <div class="text-lg font-bold text-emerald-600">0 คน</div>
+            </div>
+            <div class="bg-amber-50/50 p-3 rounded-2xl border border-amber-100">
+              <div class="text-xs text-amber-600 mb-1">สาย</div>
+              <div class="text-lg font-bold text-amber-600">0 คน</div>
+            </div>
+            <div class="bg-sky-50/50 p-3 rounded-2xl border border-sky-100">
+              <div class="text-xs text-sky-600 mb-1">ลา</div>
+              <div class="text-lg font-bold text-sky-600">0 คน</div>
+            </div>
+            <div class="bg-rose-50/50 p-3 rounded-2xl border border-rose-100 col-span-2 md:col-span-1">
+              <div class="text-xs text-rose-600 mb-1">ขาด</div>
+              <div class="text-lg font-bold text-rose-600">5 คน</div>
+            </div>
+          </div>
+
+          <!-- รายชื่อบุคคล (ดีไซน์ตัวอย่างตามภาพ) -->
+          <div class="divide-y divide-gray-100">
+            <div class="py-3 flex justify-between items-center">
+              <div>
+                <span class="text-blue-600 font-bold text-sm">[13882] นายกิตติกร ไทยมานิย์</span>
+                <p class="text-xs text-gray-400">ม.5/3 • ที่ปรึกษาอาวุโสองค์กร</p>
+              </div>
+              <div class="flex space-x-1.5">
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
+                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
+              </div>
+            </div>
+            <div class="py-3 flex justify-between items-center">
+              <div>
+                <span class="text-blue-600 font-bold text-sm">[13894] นางสาวกวินริดา สรสุวรรณ</span>
+                <p class="text-xs text-gray-400">ม.5/3 • ส่วนงานงบประมาณ</p>
+              </div>
+              <div class="flex space-x-1.5">
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
+                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
+              </div>
+            </div>
+            <div class="py-3 flex justify-between items-center">
+              <div>
+                <span class="text-blue-600 font-bold text-sm">[13896] นางสาวขวัญจิรา บุญมานะ</span>
+                <p class="text-xs text-gray-400">ม.5/3 • ศูนย์อบรมและพัฒนาบุคลากร</p>
+              </div>
+              <div class="flex space-x-1.5">
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">มา</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">สาย</button>
+                <button class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">ลา</button>
+                <button class="px-3 py-1 text-xs bg-rose-500 text-white rounded-lg shadow-sm font-semibold">ขาด</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. ระบบหลังบ้าน: หน้ารวมการ์ดกิจกรรม (Admin Dashboard) -->
+    <section id="sec-admin" class="hidden space-y-6">
+      <div class="glass-card p-6 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-4 text-gray-800">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">🛡️ Dashboard จัดการข้อมูล</h2>
+          <p class="text-sm text-gray-600">เลือกกิจกรรมที่ต้องการตรวจสอบรายชื่อ เช็คชื่อ และจัดการข้อมูล</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="switchTab('add-activity')" class="bg-amber-500 text-white font-bold px-4 py-3 rounded-2xl shadow hover:bg-amber-600 transition text-sm">✨ สร้างกิจกรรม</button>
+          <button onclick="logoutAdmin()" class="bg-red-500 text-white font-bold px-4 py-3 rounded-2xl shadow hover:bg-red-600 transition text-sm">ออกจากระบบ</button>
+        </div>
+      </div>
+      
+      <div id="admin-activity-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-white text-center col-span-full py-10 font-medium">⏳ กำลังโหลดข้อมูลหลังบ้าน...</p>
+      </div>
+    </section>
+
+    <!-- 6. ระบบหลังบ้าน: หน้าจัดการรายชื่อเฉพาะกิจกรรมที่เลือก -->
+    <section id="sec-admin-detail" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="switchTab('admin')" class="bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 backdrop-blur">
+          <span>←</span> กลับไปหน้าเลือกกิจกรรม
+        </button>
+        <button onclick="logoutAdmin()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-xl text-sm shadow transition">ออกจากระบบ</button>
+      </div>
+
+      <div id="admin-detail-container" class="space-y-6">
+        <!-- ข้อมูลจะถูกเติมเข้ามาผ่าน JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script สำหรับจัดการระบบทั้งหมด -->
+  <script>
+    const SUPABASE_URL = "https://fmemcvzvoxfbiqldtkyx.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_5fM-4pLBPNfe48AHmocIHw__QKX3cIV";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let activeActivitiesData = {}; 
+    let nextTargetAction = ''; 
+
+    window.onload = async () => {
+      loadActivities();
+      checkLoginStatusUI();
+    };
+
+    function switchTab(tabName, activityId = null) {
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('sec-' + tabName).classList.remove('hidden');
+
+      if (tabName === 'activities') loadActivities();
+      if (tabName === 'admin') loadAdminDashboard();
+      if (tabName === 'admin-detail' && activityId) loadAdminDetail(activityId);
+      if (tabName === 'register' && activityId) {
+        document.getElementById('reg-activity-id').value = activityId;
+        const act = activeActivitiesData[activityId];
+        document.getElementById('display-act-title').innerText = act ? act.title : 'กิจกรรมทั่วไป';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function checkAdminAuth(targetTab) {
+      nextTargetAction = targetTab;
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        switchTab(targetTab);
+      } else {
+        switchTab('admin-login');
+      }
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        alert("✅ เข้าสู่ระบบสำเร็จ!");
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+        checkLoginStatusUI();
+        switchTab(nextTargetAction || 'admin');
+      } catch (err) {
+        alert("❌ เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+      }
+    }
+
+    async function logoutAdmin() {
+      await supabaseClient.auth.signOut();
+      checkLoginStatusUI();
+      alert("🔒 ออกจากระบบเรียบร้อยแล้ว");
+      switchTab('activities');
+    }
+
+    async function checkLoginStatusUI() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      const badge = document.getElementById('admin-status-badge');
+      if (session) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    async function loadActivities() {
+      try {
+        const { data, error } = await supabaseClient.from('activities').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+
+        const container = document.getElementById('activity-list');
+        container.innerHTML = '';
+        activeActivitiesData = {};
+        
+        if (data.length === 0) {
+          container.innerHTML = '<p class="text-white col-span-full text-center py-10 font-medium">ยังไม่มีกิจกรรมในขณะนี้</p>';
+          return;
+        }
+
+        data.forEach(act => {
+          activeActivitiesData[act.id] = act;
+          const imgUrl = act.image_url || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80';
+          container.innerHTML += `
+            <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+              <div class="relative w-full aspect-video-custom overflow-hidden bg-gray-100">
+                <img src="${imgUrl}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-3 left-4 right-4">
+                  <h2 class="text-lg font-bold text-white line-clamp-2 leading-tight">${act.title}</h2>
+                </div>
+              </div>
+              <div class="p-5 space-y-4">
+                <div class="text-sm text-gray-600 space-y-2 font-medium">
+                  <p class="flex items-center gap-2"><span>📅</span> ${act.event_date || 'ไม่ระบุวันที่'}</p>
+                  <p class="flex items-center gap-2"><span>📍</span> ${act.location || 'ไม่ระบุสถานที่'}</p>
+                </div>
+                <button onclick="switchTab('register', '${act.id}')" class="w-full btn-primary-custom text-white px-4 py-3 rounded-xl text-sm font-bold shadow">
+                  ลงทะเบียนเข้าร่วม
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById('activity-list').innerHTML = `<p class="text-white col-span-full text-center">เกิดข้อผิดพลาดในการดึงข้อมูล</p>`;
+      }
+    }
+
+    async function handleAddActivity(e) {
+      e.preventDefault();
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        alert("❌ กรุณาเข้าสู่ระบบก่อนสร้างกิจกรรม");
+        switchTab('admin-login');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = "⏳ กำลังอัปโหลดรูปภาพและสร้างกิจกรรม...";
+      submitBtn.disabled = true;
+
+      try {
+        const fileInput = document.getElementById('act-image-file');
+        const file = fileInput.files[0];
+        let publicImageUrl = '';
+
+        if (file) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+          const { error: uploadError } = await supabaseClient.storage.from('activity-images').upload(fileName, file);
+          if (uploadError) throw uploadError;
+          const { data: publicURLData } = supabaseClient.storage.from('activity-images').getPublicUrl(fileName);
+          publicImageUrl = publicURLData.publicUrl;
+        }
+
+        const newAct = {
+          title: document.getElementById('act-title').value,
+          event_date: document.getElementById('act-date').value,
+          location: document.getElementById('act-location').value,
+          image_url: publicImageUrl
+        };
+
+        const { error: insertError } = await supabaseClient.from('activities').insert([newAct]);
+        if (insertError) throw insertError;
+
+        alert("✨ สร้างกิจกรรมและอัปโหลดรูปภาพสำเร็จ!");
+        document.getElementById('activityForm').reset();
+        switchTab('activities');
+      } catch (err) {
+        alert("❌ เกิดข้อผิดพลาด: " + err.message);
+      } finally {
+        submitBtn.innerText = "ยืนยันสร้างกิจกรรม";
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function deleteActivity(activityId, activityTitle) {
+      if (!confirm(`⚠️ คุณแน่ใจหรือไม่ที่จะลบกิจกรรม "${activityTitle}"?\nการกระทำนี้จะลบข้อมูลผู้สมัครทั้งหมดในกิจกรรมนี้ด้วย!`)) return;
+
+      try {
+        await supabaseClient.from('participants').delete().eq('activity_id', activityId);
+        const { error } = await supabaseClient.from('activities').delete().eq('id', activityId);
+        if (error) throw error;
+        alert("🗑️ ลบกิจกรรมเรียบร้อยแล้ว");
+        switchTab('admin');
+      } catch (err) {
+        alert("❌ เกิดข้อผิดพลาดในการลบ: " + err.message);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const activityId = document.getElementById('reg-activity-id').value;
+      const act = activeActivitiesData[activityId];
+
+      const applicantData = {
+        activity_id: activityId,
+        activity_title: act ? act.title : 'กิจกรรมทั่วไป',
+        prefix: document.getElementById('reg-prefix').value,
+        first_name: document.getElementById('reg-firstname').value,
+        last_name: document.getElementById('reg-lastname').value,
+        phone: document.getElementById('reg-phone').value,
+        school: document.getElementById('reg-school').value,
+        checked_in: false
+      };
+
+      try {
+        const { error } = await supabaseClient.from('participants').insert([applicantData]);
+        if (error) throw error;
+        alert("🎉 ลงทะเบียนเข้าร่วมกิจกรรมสำเร็จ!");
+        document.getElementById('registerForm').reset();
+        switchTab('activities');
+      } catch (err) {
+        alert("เกิดข้อผิดพลาดในการสมัคร: " + err.message);
+      }
+    }
+
+    async function updateCheckInStatus(participantId, isChecked) {
+      try {
+        const { error } = await supabaseClient.from('participants').update({ checked_in: isChecked }).eq('id', participantId);
+        if (error) throw error;
+      } catch (err) {
+        alert("❌ ไม่สามารถบันทึกสถานะได้: " + err.message);
+      }
+    }
+
+    function openAddPersonModal() {
+      const name = prompt("กรอกชื่อ-นามสกุล บุคลากรที่ต้องการเพิ่ม:");
+      if (name) {
+        alert("✅ เพิ่มรายชื่อ " + name + " เรียบร้อยแล้ว (จำลองการเพิ่มในหน้าจอ)");
+      }
+    }
+
+    async function loadAdminDashboard() {
+      try {
+        const { data: activities, error: actError } = await supabaseClient.from('activities').select('*').order('created_at', { ascending: false });
+        if (actError) throw actError;
+
+        const { data: participants, error: partError } = await supabaseClient.from('participants').select('*');
+        if (partError) throw partError;
+
+        const container = document.getElementById('admin-activity-grid');
+        container.innerHTML = '';
+        activeActivitiesData = {};
+
+        if (activities.length === 0) {
+          container.innerHTML = '<p class="text-white text-center col-span-full py-10 font-medium">ยังไม่มีกิจกรรมในระบบหลังบ้าน</p>';
+          return;
+        }
+
+        activities.forEach(act => {
+          activeActivitiesData[act.id] = act;
+          const count = participants.filter(p => String(p.activity_id) === String(act.id)).length;
+          const imgUrl = act.image_url || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80';
+
+          container.innerHTML += `
+            <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 flex flex-col justify-between">
+              <div>
+                <div class="relative w-full aspect-video-custom overflow-hidden bg-gray-100">
+                  <img src="${imgUrl}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div class="absolute top-3 right-3 bg-blue-600 text-white font-bold text-xs px-3 py-1.5 rounded-full shadow">
+                    👥 ผู้สมัคร: ${count} คน
+                  </div>
+                  <div class="absolute bottom-3 left-4 right-4">
+                    <h2 class="text-lg font-bold text-white line-clamp-2 leading-tight">${act.title}</h2>
+                  </div>
+                </div>
+                <div class="p-5 space-y-2 text-sm text-gray-600 font-medium">
+                  <p class="flex items-center gap-2"><span>📅</span> ${act.event_date || 'ไม่ระบุวันที่'}</p>
+                  <p class="flex items-center gap-2"><span>📍</span> ${act.location || 'ไม่ระบุสถานที่'}</p>
+                </div>
+              </div>
+              <div class="p-5 pt-0 grid grid-cols-2 gap-2">
+                <button onclick="switchTab('admin-detail', '${act.id}')" class="btn-primary-custom text-white py-3 rounded-xl text-sm font-bold shadow text-center">
+                  📂 จัดการรายชื่อ
+                </button>
+                <button onclick="deleteActivity('${act.id}', '${encodeURIComponent(act.title)}')" class="bg-red-100 hover:bg-red-200 text-red-600 py-3 rounded-xl text-sm font-bold transition text-center">
+                  🗑️ ลบกิจกรรม
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.log(err);
+        document.getElementById('admin-activity-grid').innerHTML = `<p class="text-white col-span-full text-center">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
+      }
+    }
+
+    async function loadAdminDetail(activityId) {
+      try {
+        const { data: act, error: actError } = await supabaseClient.from('activities').select('*').eq('id', activityId).single();
+        if (actError) throw actError;
+
+        const { data: participants, error: partError } = await supabaseClient.from('participants').select('*').eq('activity_id', activityId);
+        if (partError) throw partError;
+
+        const container = document.getElementById('admin-detail-container');
+        const count = participants.length;
+        const imgUrl = act.image_url || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80';
+
+        let participantsRows = '';
+        if (count === 0) {
+          participantsRows = `<tr><td colspan="5" class="p-6 text-center text-gray-400 text-sm">ยังไม่มีผู้สมัครในกิจกรรมนี้</td></tr>`;
+        } else {
+          participants.forEach((p, pIndex) => {
+            const prefixStr = p.prefix ? p.prefix : '';
+            const isChecked = p.checked_in ? 'checked' : '';
+            participantsRows += `
+              <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
+                <td class="p-3 text-center text-gray-500">${pIndex + 1}</td>
+                <td class="p-3 font-medium text-gray-900">${prefixStr} ${p.first_name} ${p.last_name}</td>
+                <td class="p-3 text-center">
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer bg-blue-50 px-3 py-1 rounded-lg border border-blue-100 text-blue-700 font-semibold text-xs">
+                    <input type="checkbox" ${isChecked} onchange="updateCheckInStatus('${p.id}', this.checked)" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <span>Confirm / มาถึง</span>
+                  </label>
+                </td>
+                <td class="p-3 text-gray-600">📱 ${p.phone}</td>
+                <td class="p-3 text-gray-600">🏫 ${p.school || '-'}</td>
+              </tr>
+            `;
+          });
+        }
+
+        container.innerHTML = `
+          <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6 text-gray-800">
+            <div class="flex flex-col md:flex-row gap-6 items-center border-b border-gray-200 pb-6">
+              <div class="w-full md:w-72 aspect-video-custom rounded-2xl overflow-hidden shadow-md flex-shrink-0 bg-gray-100">
+                <img src="${imgUrl}" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-grow space-y-2 w-full">
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">รายละเอียดกิจกรรมหลังบ้าน</span>
+                <h2 class="text-2xl font-bold text-gray-900">${act.title}</h2>
+                <p class="text-sm text-gray-600 flex items-center gap-2"><span>📅</span> ${act.event_date || 'ไม่ระบุวันที่'}</p>
+                <p class="text-sm text-gray-600 flex items-center gap-2"><span>📍</span> ${act.location || 'ไม่ระบุสถานที่'}</p>
+                <div class="pt-2 flex items-center gap-3 flex-wrap">
+                  <div class="bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-sm shadow">
+                    👥 ผู้สมัครทั้งหมด: <span class="text-lg">${count}</span> คน
+                  </div>
+                  <button onclick="exportToExcel('${act.id}', '${encodeURIComponent(act.title)}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm shadow transition flex items-center gap-1.5">
+                    📊 โหลด Excel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-lg font-bold text-gray-900">รายชื่อผู้เข้าร่วมและเช็คชื่อ</h3>
+              <div class="overflow-x-auto rounded-2xl border border-gray-200">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-gray-50 text-xs font-bold text-gray-500 uppercase">
+                      <th class="p-3 text-center w-12">#</th>
+                      <th class="p-3">ชื่อ-นามสกุล</th>
+                      <th class="p-3 text-center">สถานะเข้าร่วม</th>
+                      <th class="p-3">เบอร์โทรศัพท์</th>
+                      <th class="p-3">ระดับชั้นปีการศึกษา</th>
+                    </tr>
+                  </thead>
+                  <tbody>${participantsRows}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        console.log(err);
+        document.getElementById('admin-detail-container').innerHTML = `<p class="text-white text-center">เกิดข้อผิดพลาดในการโหลดข้อมูลกิจกรรม</p>`;
+      }
+    }
+
+    async function exportToExcel(activityId, encodedTitle) {
+      const title = decodeURIComponent(encodedTitle);
+      try {
+        const { data, error } = await supabaseClient
+          .from('participants')
+          .select('prefix, first_name, last_name, phone, school, checked_in, created_at')
+          .eq('activity_id', activityId);
+
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          alert("⚠️ ไม่มีข้อมูลผู้สมัครในกิจกรรมนี้สำหรับดาวน์โหลด");
+          return;
+        }
+
+        let csvContent = "\uFEFFลำดับ,คำนำหน้า,ชื่อ,นามสกุล,เบอร์โทรศัพท์,ระดับชั้นปีการศึกษา,สถานะมาถึง,วันที่สมัคร\n";
+        data.forEach((p, index) => {
+          const row = [
+            index + 1,
+            `"${p.prefix || ''}"`,
+            `"${p.first_name || ''}"`,
+            `"${p.last_name || ''}"`,
+            `"${p.phone || ''}"`,
+            `"${p.school || '-'}"`,
+            `"${p.checked_in ? 'มาถึงแล้ว' : 'ยังไม่มา'}"`,
+            `"${new Date(p.created_at).toLocaleString('th-TH')}"`
+          ];
+          csvContent += row.join(",") + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `ผู้สมัคร_${title.replace(/[^ก-ฮA-Za-z0-9]/g, '_')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (err) {
+        alert("❌ ไม่สามารถดาวน์โหลดไฟล์ได้: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
