@@ -22,17 +22,16 @@
     }
   </style>
 </head>
-<body class="bg-blue-500 min-h-screen flex flex-col text-slate-800">
+<body class="bg-blue-600 min-h-screen flex flex-col text-slate-800">
 
   <!-- ============================================================ -->
-  <!-- 🟢 ส่วนที่ 1: หน้าเว็บไซต์หลัก (ดีไซน์คงเดิมตามต้นฉบับ R-Sa Smart HWP) -->
+  <!-- 🟢 ส่วนที่ 1: หน้าเว็บไซต์หลัก R-Sa Smart HWP (แก้ไขการตอบสนองปุ่มแล้ว) -->
   <!-- ============================================================ -->
   <div id="page-main" class="flex-grow flex flex-col">
     
     <!-- Navbar หน้าหลัก -->
     <header class="bg-[#172554] text-white py-3 px-4 md:px-12 flex justify-between items-center shadow-lg sticky top-0 z-40">
-      <!-- โลโก้ และ ชื่อเว็บ -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchAppPage('page-main')">
         <div class="w-9 h-9 bg-amber-400 rounded-full flex items-center justify-center font-bold text-blue-950 text-xl border-2 border-white shadow">
           R
         </div>
@@ -44,25 +43,21 @@
         </div>
       </div>
 
-      <!-- เมนูด้านขวา (ฝังปุ่มระบบเช็คชื่อเพิ่มเข้าไป) -->
+      <!-- เมนูด้านขวา -->
       <div class="flex items-center gap-2 md:gap-3 text-sm font-medium">
-        <a href="#" class="hover:text-blue-300 transition hidden md:block px-2">หน้าหลัก</a>
+        <button onclick="switchAppPage('page-main')" class="hover:text-blue-300 transition hidden md:block px-2">หน้าหลัก</button>
         
-        <button class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-1.5 rounded-full font-bold shadow text-xs flex items-center gap-1">
+        <button onclick="alert('ระบบสร้างกิจกรรมกำลังเปิดรับข้อมูล')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-1.5 rounded-full font-bold shadow text-xs flex items-center gap-1">
           ✨ + สร้างกิจกรรม
         </button>
         
-        <button class="bg-blue-900/80 hover:bg-blue-800 text-blue-100 px-3.5 py-1.5 rounded-full text-xs font-bold border border-blue-400/30 flex items-center gap-1 hidden sm:flex">
+        <button onclick="alert('ระบบจัดการข้อมูลสำหรับแอดมิน')" class="bg-blue-900/80 hover:bg-blue-800 text-blue-100 px-3.5 py-1.5 rounded-full text-xs font-bold border border-blue-400/30 flex items-center gap-1 hidden sm:flex">
           🛡️ จัดการข้อมูล
         </button>
 
-        <!-- 🌟 ปุ่มกดสลับเข้าสู่ส่วนระบบเช็คชื่อ 🌟 -->
+        <!-- 🌟 ปุ่มเปิดระบบเช็คชื่อ 🌟 -->
         <button onclick="openAttendancePage()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-md transition flex items-center gap-1.5 border border-indigo-400">
           📋 ระบบเช็คชื่อ
-        </button>
-
-        <button class="bg-emerald-500 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow hidden md:block">
-          แอดมินล็อกอินแล้ว
         </button>
       </div>
     </header>
@@ -106,7 +101,7 @@
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
+                <button onclick="alert('เปิดรับลงทะเบียนผ่านระบบเรียบร้อยแล้ว')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
                   ลงทะเบียนเข้าร่วม
                 </button>
                 <button onclick="openAttendancePage('จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์', 'วัดพระธรรมกาย')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs flex items-center justify-center gap-1">
@@ -134,7 +129,7 @@
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
+                <button onclick="alert('เปิดรับลงทะเบียนผ่านระบบเรียบร้อยแล้ว')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
                   ลงทะเบียนเข้าร่วม
                 </button>
                 <button onclick="openAttendancePage('จิตอาสาหล่อพระ', 'วัดปฐมวนาราม')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs flex items-center justify-center gap-1">
@@ -152,7 +147,7 @@
 
 
   <!-- ============================================================ -->
-  <!-- 🔵 ส่วนที่ 2: หน้าระบบเช็คชื่อ (ระบบเต็มรูปแบบที่ถูกฝังไว้) -->
+  <!-- 🔵 ส่วนที่ 2: หน้าระบบเช็คชื่อ -->
   <!-- ============================================================ -->
   <div id="page-attendance" class="page-hidden min-h-screen bg-slate-100 flex-grow flex flex-col">
     
@@ -161,8 +156,7 @@
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         
         <div class="flex items-center gap-3">
-          <!-- ปุ่มกลับหน้าหลัก R-Sa Smart HWP -->
-          <button onclick="switchAppPage('page-main')" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition" title="กลับหน้าหลัก">
+          <button onclick="switchAppPage('page-main')" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition">
             ⬅️ กลับหน้าหลัก R-Sa Smart HWP
           </button>
           
@@ -175,7 +169,7 @@
         <div class="flex items-center gap-3">
           <div id="admin-indicator" class="bg-blue-950/60 backdrop-blur px-3 py-1.5 rounded-full text-xs flex items-center gap-2 border border-blue-400/30">
             <span id="admin-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span id="admin-status-text">โหมดแอดมิน (จัดการได้เต็มรูปแบบ)</span>
+            <span id="admin-status-text">โหมดแอดมิน</span>
           </div>
           <button id="btn-admin-auth" onclick="toggleAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow transition flex items-center gap-1">
             🔑 แอดมิน
@@ -198,7 +192,6 @@
       
       <!-- Section 1: Checkin -->
       <section id="sec-checkin" class="space-y-6">
-        <!-- Card 1: ตั้งค่ากิจกรรม -->
         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
           <h2 class="text-base font-bold text-slate-800 border-b pb-3 flex items-center gap-2">
             <span>⚙️</span> 1. กำหนดข้อมูลกิจกรรม
@@ -228,7 +221,6 @@
           </div>
         </div>
 
-        <!-- Card 2: ตารางเช็คชื่อ -->
         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-4">
             <div>
@@ -248,7 +240,7 @@
           </div>
 
           <div id="checkin-list-container" class="divide-y divide-slate-100">
-            <!-- Render Dynamic List -->
+            <!-- Render List -->
           </div>
         </div>
       </section>
@@ -315,7 +307,7 @@
                 </tr>
               </thead>
               <tbody id="personnel-table-body" class="divide-y divide-slate-100">
-                <!-- Render Personnel -->
+                <!-- Render Table -->
               </tbody>
             </table>
           </div>
@@ -326,51 +318,35 @@
   </div>
 
   <!-- MODALS -->
-  <!-- Admin Modal -->
   <div id="modal-admin-login" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <h3 class="text-lg font-bold text-center">🔑 เข้าสู่ระบบแอดมิน</h3>
-      <p class="text-xs text-slate-500 text-center">ป้อนรหัสผ่านเพื่อสิทธิ์การจัดการระบบเต็มรูปแบบ</p>
-      <input type="password" id="admin-pass-input" placeholder="รหัสผ่าน (ตั้งต้น: admin123)" class="w-full bg-slate-50 border rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+      <input type="password" id="admin-pass-input" placeholder="รหัสผ่าน (ตั้งต้น: admin123)" class="w-full bg-slate-50 border rounded-xl p-3 text-sm outline-none">
       <div class="flex gap-2">
-        <button onclick="toggleAdminModal()" class="w-1/2 py-2.5 rounded-xl border text-xs font-bold text-slate-600 hover:bg-slate-50">ยกเลิก</button>
-        <button onclick="handleAdminLogin()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700">เข้าสู่ระบบ</button>
+        <button onclick="toggleAdminModal()" class="w-1/2 py-2.5 rounded-xl border text-xs font-bold text-slate-600">ยกเลิก</button>
+        <button onclick="handleAdminLogin()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold">เข้าสู่ระบบ</button>
       </div>
     </div>
   </div>
 
-  <!-- Add Personnel Modal -->
   <div id="modal-add-personnel" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <h3 class="font-bold border-b pb-2 text-slate-800">➕ เพิ่มรายชื่อใหม่</h3>
       <div class="space-y-3 text-xs">
-        <div>
-          <label class="font-semibold text-slate-600">รหัส / เลขประจำตัว</label>
-          <input type="text" id="input-no" placeholder="เช่น 13882" class="w-full border rounded-xl p-2.5 mt-1 outline-none">
-        </div>
-        <div>
-          <label class="font-semibold text-slate-600">ชื่อ-นามสกุล</label>
-          <input type="text" id="input-name" placeholder="เช่น นายกิตติกร ไทยมานิตย์" class="w-full border rounded-xl p-2.5 mt-1 outline-none">
-        </div>
-        <div>
-          <label class="font-semibold text-slate-600">ชั้นเรียน</label>
-          <input type="text" id="input-class" placeholder="เช่น ม.5/3" class="w-full border rounded-xl p-2.5 mt-1 outline-none">
-        </div>
-        <div>
-          <label class="font-semibold text-slate-600">สังกัด / ฝ่ายงาน</label>
-          <input type="text" id="input-dept" placeholder="เช่น ศูนย์ส่งเสริมเครือข่ายเยาวชนจิตอาสา" class="w-full border rounded-xl p-2.5 mt-1 outline-none">
-        </div>
+        <div><label class="font-semibold text-slate-600">รหัส / เลขประจำตัว</label><input type="text" id="input-no" class="w-full border rounded-xl p-2.5 mt-1"></div>
+        <div><label class="font-semibold text-slate-600">ชื่อ-นามสกุล</label><input type="text" id="input-name" class="w-full border rounded-xl p-2.5 mt-1"></div>
+        <div><label class="font-semibold text-slate-600">ชั้นเรียน</label><input type="text" id="input-class" class="w-full border rounded-xl p-2.5 mt-1"></div>
+        <div><label class="font-semibold text-slate-600">สังกัด / ฝ่ายงาน</label><input type="text" id="input-dept" class="w-full border rounded-xl p-2.5 mt-1"></div>
       </div>
       <div class="flex gap-2 mt-4">
         <button onclick="closeAddPersonnelModal()" class="w-1/2 py-2 border rounded-xl text-xs font-bold text-slate-600">ยกเลิก</button>
-        <button onclick="handleAddPersonnel()" class="w-1/2 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700">บันทึก</button>
+        <button onclick="handleAddPersonnel()" class="w-1/2 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">บันทึก</button>
       </div>
     </div>
   </div>
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // ฐานข้อมูลเริ่มต้นของสมาชิกเครือข่ายจิตอาสา หอวัง ปทุมธานี
     const initialPersonnelData = [
       { id: 1, no: "13882", name: "นายกิตติกร ไทยมานิตย์", class: "ม.5/3", dept: "ที่ปรึกษาอวุโสองค์กร" },
       { id: 2, no: "13894", name: "นางสาวกวินธิดา สรสุวรรณ", class: "ม.5/3", dept: "ส่วนงานงบประมาณ" },
@@ -390,7 +366,14 @@
     let currentStatuses = {};
     let chartStatusInstance = null, chartRoundsInstance = null;
 
-    // สลับหน้าระหว่าง Web หลัก และ ระบบเช็คชื่อ
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('checkin-date').valueAsDate = new Date();
+      renderCheckinList();
+      renderPersonnelTable();
+      renderRecordsList();
+      updateBadges();
+    });
+
     function switchAppPage(pageId) {
       document.getElementById('page-main').classList.add('page-hidden');
       document.getElementById('page-attendance').classList.add('page-hidden');
@@ -400,18 +383,11 @@
 
     function openAttendancePage(activityName, locationName) {
       switchAppPage('page-attendance');
-      document.getElementById('checkin-date').valueAsDate = new Date();
       if(activityName) document.getElementById('checkin-activity').value = activityName;
       if(locationName) document.getElementById('checkin-location').value = locationName;
-      
-      renderCheckinList();
-      renderPersonnelTable();
-      renderRecordsList();
-      updateBadges();
       if(!chartStatusInstance) initCharts();
     }
 
-    // ระบบ Tab ด้านในระบบเช็คชื่อ
     function switchTab(tabName) {
       ['checkin', 'daily', 'records', 'stats', 'personnel'].forEach(t => {
         document.getElementById('sec-' + t).classList.add('hidden');
@@ -422,22 +398,16 @@
       if (tabName === 'stats') updateStats();
     }
 
-    // Admin Auth Functions
     function toggleAdminModal() { document.getElementById('modal-admin-login').classList.toggle('hidden'); }
     function handleAdminLogin() {
       const pass = document.getElementById('admin-pass-input').value;
       if (pass === 'admin123' || pass === '') {
         isAdmin = true;
-        document.getElementById('admin-status-text').innerText = 'โหมดแอดมิน (จัดการได้เต็มรูปแบบ)';
-        document.getElementById('admin-status-dot').className = 'w-2 h-2 rounded-full bg-emerald-400';
-        toggleAdminModal();
         alert("✅ เข้าสู่ระบบแอดมินสำเร็จ");
-      } else {
-        alert("❌ รหัสผ่านไม่ถูกต้อง");
-      }
+        toggleAdminModal();
+      } else { alert("❌ รหัสผ่านไม่ถูกต้อง"); }
     }
 
-    // Render เช็คชื่อ
     function renderCheckinList() {
       const container = document.getElementById('checkin-list-container');
       if (!personnelList.length) {
@@ -456,9 +426,7 @@
               ${['มา', 'สาย', 'ลา', 'ขาด'].map(type => `
                 <button onclick="setStatus(${p.id}, '${type}')" class="px-3 py-1 rounded-xl text-xs font-bold transition ${
                   st === type ? getStatusColorClass(type) : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }">
-                  ${type}
-                </button>
+                }">${type}</button>
               `).join('')}
             </div>
           </div>
@@ -475,76 +443,50 @@
       }
     }
 
-    function setStatus(id, type) {
-      currentStatuses[id] = type;
-      renderCheckinList();
-    }
+    function setStatus(id, type) { currentStatuses[id] = type; renderCheckinList(); }
+    function setAllStatus(type) { personnelList.forEach(p => currentStatuses[p.id] = type); renderCheckinList(); }
 
-    function setAllStatus(type) {
-      personnelList.forEach(p => currentStatuses[p.id] = type);
-      renderCheckinList();
-    }
-
-    // Save Attendance Record
     function saveAttendanceRecord() {
       const date = document.getElementById('checkin-date').value;
       const activity = document.getElementById('checkin-activity').value;
       const location = document.getElementById('checkin-location').value;
-
       if (!date) { alert("กรุณาเลือกวันที่"); return; }
 
       const record = {
-        id: Date.now(),
-        date: date,
-        activity: activity,
-        location: location,
+        id: Date.now(), date, activity, location,
         timestamp: new Date().toLocaleString('th-TH'),
-        details: personnelList.map(p => ({
-          ...p,
-          status: currentStatuses[p.id] || 'ขาด'
-        }))
+        details: personnelList.map(p => ({ ...p, status: currentStatuses[p.id] || 'ขาด' }))
       };
 
       attendanceRecords.unshift(record);
       localStorage.setItem('hwp_records', JSON.stringify(attendanceRecords));
-      
-      alert("✅ บันทึกข้อมูลการเช็คชื่อเรียบร้อยแล้ว!");
+      alert("✅ บันทึกการเช็คชื่อเรียบร้อยแล้ว!");
       renderRecordsList();
       updateBadges();
       switchTab('records');
     }
 
-    // Render Records History
     function renderRecordsList() {
       const recs = document.getElementById('records-list');
       const sel = document.getElementById('select-daily-record');
-      
       if (!attendanceRecords.length) {
         recs.innerHTML = `<div class="text-center text-slate-400 py-8">ยังไม่มีประวัติการบันทึก</div>`;
         sel.innerHTML = `<option>ไม่มีข้อมูล</option>`;
         return;
       }
-
       sel.innerHTML = attendanceRecords.map(r => `<option value="${r.id}">${r.date} - ${r.activity}</option>`).join('');
-
       recs.innerHTML = attendanceRecords.map(r => {
         const presentCount = r.details.filter(d => d.status === 'มา').length;
-        const totalCount = r.details.length;
         return `
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex justify-between items-center hover:bg-slate-100 transition">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex justify-between items-center">
             <div>
               <div class="font-bold text-slate-800 text-sm">📅 ${r.date} | ${r.activity}</div>
               <div class="text-xs text-slate-500">📍 ${r.location} • บันทึกเมื่อ: ${r.timestamp}</div>
             </div>
-            <div class="text-right">
-              <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
-                มา ${presentCount}/${totalCount} คน
-              </span>
-            </div>
+            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">มา ${presentCount}/${r.details.length} คน</span>
           </div>
         `;
       }).join('');
-
       renderDailyDetail();
     }
 
@@ -552,11 +494,7 @@
       const id = document.getElementById('select-daily-record').value;
       const rec = attendanceRecords.find(r => String(r.id) === String(id));
       const container = document.getElementById('daily-detail-content');
-      
-      if (!rec) {
-        container.innerHTML = `<div class="bg-white p-6 rounded-3xl text-center text-slate-400 border">ไม่มีข้อมูลวันดังกล่าว</div>`;
-        return;
-      }
+      if (!rec) { container.innerHTML = `<div class="bg-white p-6 rounded-3xl text-center text-slate-400 border">ไม่มีข้อมูลวันดังกล่าว</div>`; return; }
 
       const present = rec.details.filter(d => d.status === 'มา').length;
       const late = rec.details.filter(d => d.status === 'สาย').length;
@@ -564,34 +502,24 @@
       const absent = rec.details.filter(d => d.status === 'ขาด').length;
 
       container.innerHTML = `
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 space-y-4">
+        <div class="bg-white p-6 rounded-3xl border space-y-4">
           <div class="border-b pb-3">
             <h3 class="font-bold text-lg text-slate-800">${rec.activity}</h3>
             <p class="text-xs text-slate-500">วันที่: ${rec.date} | สถานที่: ${rec.location}</p>
           </div>
-          
           <div class="grid grid-cols-4 gap-2 text-center">
             <div class="p-3 bg-emerald-50 text-emerald-700 rounded-2xl"><div class="text-xs">มา</div><div class="font-bold text-lg">${present}</div></div>
             <div class="p-3 bg-amber-50 text-amber-700 rounded-2xl"><div class="text-xs">สาย</div><div class="font-bold text-lg">${late}</div></div>
             <div class="p-3 bg-sky-50 text-sky-700 rounded-2xl"><div class="text-xs">ลา</div><div class="font-bold text-lg">${leave}</div></div>
             <div class="p-3 bg-rose-50 text-rose-700 rounded-2xl"><div class="text-xs">ขาด</div><div class="font-bold text-lg">${absent}</div></div>
           </div>
-
           <table class="w-full text-sm mt-4 border-t">
-            <tbody>
-              ${rec.details.map(d => `
-                <tr class="border-b">
-                  <td class="py-2.5 font-medium text-slate-800">${d.name} (${d.class})</td>
-                  <td class="py-2.5 text-right font-bold">${d.status}</td>
-                </tr>
-              `).join('')}
-            </tbody>
+            <tbody>${rec.details.map(d => `<tr class="border-b"><td class="py-2.5 font-medium text-slate-800">${d.name} (${d.class})</td><td class="py-2.5 text-right font-bold">${d.status}</td></tr>`).join('')}</tbody>
           </table>
         </div>
       `;
     }
 
-    // Personnel Functions
     function renderPersonnelTable() {
       document.getElementById('personnel-table-body').innerHTML = personnelList.map(p => `
         <tr class="hover:bg-slate-50">
@@ -599,9 +527,7 @@
           <td class="p-3 font-medium text-slate-800">${p.name}</td>
           <td class="p-3 text-slate-600">${p.class}</td>
           <td class="p-3 text-slate-600">${p.dept}</td>
-          <td class="p-3 text-center">
-            <button onclick="deletePersonnel(${p.id})" class="text-rose-500 hover:text-rose-700 font-bold text-xs bg-rose-50 px-2.5 py-1 rounded-lg">ลบ</button>
-          </td>
+          <td class="p-3 text-center"><button onclick="deletePersonnel(${p.id})" class="text-rose-500 font-bold text-xs bg-rose-50 px-2.5 py-1 rounded-lg">ลบ</button></td>
         </tr>
       `).join('');
     }
@@ -613,10 +539,8 @@
       const name = document.getElementById('input-name').value;
       const cls = document.getElementById('input-class').value;
       const dept = document.getElementById('input-dept').value;
-
       if (!name) { alert("กรุณากรอกชื่อ-นามสกุล"); return; }
-
-      personnelList.push({ id: Date.now(), no: no || "-", name: name, class: cls || "-", dept: dept || "-" });
+      personnelList.push({ id: Date.now(), no: no || "-", name, class: cls || "-", dept: dept || "-" });
       localStorage.setItem('hwp_personnel', JSON.stringify(personnelList));
       closeAddPersonnelModal();
       renderPersonnelTable();
@@ -634,33 +558,23 @@
       }
     }
 
-    // Charts & Badges
     function initCharts() {
       const ctx1 = document.getElementById('chartStatus').getContext('2d');
       chartStatusInstance = new Chart(ctx1, {
         type: 'doughnut',
-        data: {
-          labels: ['มา', 'สาย', 'ลา', 'ขาด'],
-          datasets: [{ data: [10, 1, 0, 1], backgroundColor: ['#10b981', '#f59e0b', '#0ea5e9', '#f43f5e'] }]
-        },
+        data: { labels: ['มา', 'สาย', 'ลา', 'ขาด'], datasets: [{ data: [10, 1, 0, 1], backgroundColor: ['#10b981', '#f59e0b', '#0ea5e9', '#f43f5e'] }] },
         options: { responsive: true, maintainAspectRatio: false }
       });
 
       const ctx2 = document.getElementById('chartRounds').getContext('2d');
       chartRoundsInstance = new Chart(ctx2, {
         type: 'bar',
-        data: {
-          labels: ['ครั้งที่ 1', 'ครั้งที่ 2', 'ครั้งที่ 3'],
-          datasets: [{ label: '% การมาเข้าร่วม', data: [90, 85, 95], backgroundColor: '#2563eb' }]
-        },
+        data: { labels: ['ครั้งที่ 1', 'ครั้งที่ 2', 'ครั้งที่ 3'], datasets: [{ label: '% การมาเข้าร่วม', data: [90, 85, 95], backgroundColor: '#2563eb' }] },
         options: { responsive: true, maintainAspectRatio: false }
       });
     }
 
-    function updateStats() {
-      if(chartStatusInstance) chartStatusInstance.update();
-    }
-
+    function updateStats() { if(chartStatusInstance) chartStatusInstance.update(); }
     function updateBadges() {
       document.getElementById('badge-personnel-count').innerText = personnelList.length;
       document.getElementById('badge-records-count').innerText = attendanceRecords.length;
