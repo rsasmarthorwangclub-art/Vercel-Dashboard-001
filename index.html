@@ -25,7 +25,7 @@
 <body class="bg-blue-600 min-h-screen flex flex-col text-slate-800">
 
   <!-- ============================================================ -->
-  <!-- 🟢 ส่วนที่ 1: หน้าเว็บไซต์หลัก R-Sa Smart HWP (แก้ไขการตอบสนองปุ่มแล้ว) -->
+  <!-- 🟢 ส่วนที่ 1: หน้าเว็บไซต์กิจกรรมหลัก (R-Sa Smart HWP) -->
   <!-- ============================================================ -->
   <div id="page-main" class="flex-grow flex flex-col">
     
@@ -43,26 +43,25 @@
         </div>
       </div>
 
-      <!-- เมนูด้านขวา -->
+      <!-- เมนูด้านขวา (ทำงานได้จริงทุกปุ่ม) -->
       <div class="flex items-center gap-2 md:gap-3 text-sm font-medium">
         <button onclick="switchAppPage('page-main')" class="hover:text-blue-300 transition hidden md:block px-2">หน้าหลัก</button>
         
-        <button onclick="alert('ระบบสร้างกิจกรรมกำลังเปิดรับข้อมูล')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-1.5 rounded-full font-bold shadow text-xs flex items-center gap-1">
+        <button onclick="openCreateActivityModal()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-1.5 rounded-full font-bold shadow text-xs flex items-center gap-1 transition transform active:scale-95">
           ✨ + สร้างกิจกรรม
         </button>
         
-        <button onclick="alert('ระบบจัดการข้อมูลสำหรับแอดมิน')" class="bg-blue-900/80 hover:bg-blue-800 text-blue-100 px-3.5 py-1.5 rounded-full text-xs font-bold border border-blue-400/30 flex items-center gap-1 hidden sm:flex">
+        <button onclick="toggleAdminModal()" class="bg-blue-900/80 hover:bg-blue-800 text-blue-100 px-3.5 py-1.5 rounded-full text-xs font-bold border border-blue-400/30 flex items-center gap-1 hidden sm:flex transition">
           🛡️ จัดการข้อมูล
         </button>
 
-        <!-- 🌟 ปุ่มเปิดระบบเช็คชื่อ 🌟 -->
         <button onclick="openAttendancePage()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-md transition flex items-center gap-1.5 border border-indigo-400">
           📋 ระบบเช็คชื่อ
         </button>
       </div>
     </header>
 
-    <!-- Main Content Container -->
+    <!-- Main Content -->
     <main class="max-w-6xl mx-auto w-full px-4 py-8 space-y-8 flex-grow">
       
       <!-- Banner Hero -->
@@ -73,72 +72,21 @@
         </p>
       </section>
 
-      <!-- กิจกรรมล่าสุด -->
+      <!-- รายการกิจกรรม -->
       <section class="space-y-4">
-        <div class="flex items-center gap-2 text-white font-bold text-xl">
-          <span class="text-amber-300">❖</span>
-          <h2>กิจกรรมล่าสุด</h2>
+        <div class="flex items-center justify-between text-white font-bold text-xl">
+          <div class="flex items-center gap-2">
+            <span class="text-amber-300">❖</span>
+            <h2>กิจกรรมล่าสุด</h2>
+          </div>
+          <button onclick="openCreateActivityModal()" class="text-xs bg-white/10 hover:bg-white/20 text-blue-100 px-3 py-1.5 rounded-xl border border-blue-300/30 font-normal">
+            + เพิ่มกิจกรรมใหม่
+          </button>
         </div>
 
-        <!-- Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <!-- Card 1 -->
-          <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 flex flex-col">
-            <div class="relative h-48 bg-slate-800">
-              <img src="https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png" class="w-full h-full object-cover opacity-80" alt="กิจกรรมกฐิน">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex items-end">
-                <h3 class="text-white font-bold text-lg leading-snug">จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์</h3>
-              </div>
-            </div>
-            <div class="p-5 space-y-4 flex-grow flex flex-col justify-between">
-              <div class="space-y-1.5 text-xs text-slate-500 font-medium">
-                <div class="flex items-center gap-2">
-                  <span>📅</span> 11-12 กันยายน 2569
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-red-500">📍</span> วัดพระธรรมกาย
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="alert('เปิดรับลงทะเบียนผ่านระบบเรียบร้อยแล้ว')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
-                  ลงทะเบียนเข้าร่วม
-                </button>
-                <button onclick="openAttendancePage('จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์', 'วัดพระธรรมกาย')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs flex items-center justify-center gap-1">
-                  📋 เช็คชื่อกิจกรรมนี้
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 flex flex-col">
-            <div class="relative h-48 bg-slate-800">
-              <img src="https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png" class="w-full h-full object-cover opacity-80" alt="กิจกรรมหล่อพระ">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex items-end">
-                <h3 class="text-white font-bold text-lg leading-snug">จิตอาสาหล่อพระ</h3>
-              </div>
-            </div>
-            <div class="p-5 space-y-4 flex-grow flex flex-col justify-between">
-              <div class="space-y-1.5 text-xs text-slate-500 font-medium">
-                <div class="flex items-center gap-2">
-                  <span>📅</span> 8 กันยายน 2569
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-red-500">📍</span> วัดปฐมวนาราม
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="alert('เปิดรับลงทะเบียนผ่านระบบเรียบร้อยแล้ว')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
-                  ลงทะเบียนเข้าร่วม
-                </button>
-                <button onclick="openAttendancePage('จิตอาสาหล่อพระ', 'วัดปฐมวนาราม')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs flex items-center justify-center gap-1">
-                  📋 เช็คชื่อกิจกรรมนี้
-                </button>
-              </div>
-            </div>
-          </div>
-
+        <!-- Cards Grid แสดงกิจกรรม (ดึงข้อมูลอัตโนมัติ) -->
+        <div id="activities-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Render Cards via JavaScript -->
         </div>
       </section>
 
@@ -157,7 +105,7 @@
         
         <div class="flex items-center gap-3">
           <button onclick="switchAppPage('page-main')" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition">
-            ⬅️ กลับหน้าหลัก R-Sa Smart HWP
+            ⬅️ กลับหน้าเว็บกิจกรรม
           </button>
           
           <div>
@@ -171,7 +119,7 @@
             <span id="admin-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span id="admin-status-text">โหมดแอดมิน</span>
           </div>
-          <button id="btn-admin-auth" onclick="toggleAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow transition flex items-center gap-1">
+          <button onclick="toggleAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow transition flex items-center gap-1">
             🔑 แอดมิน
           </button>
         </div>
@@ -204,10 +152,7 @@
             <div>
               <label class="font-semibold text-slate-700">📑 เลือกรูปแบบกิจกรรม</label>
               <select id="checkin-activity" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์">จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์</option>
-                <option value="จิตอาสาหล่อพระ">จิตอาสาหล่อพระ</option>
-                <option value="ประชุมองค์กร / สภานักเรียน">ประชุมองค์กร / สภานักเรียน</option>
-                <option value="กิจกรรมพัฒนาเครือข่ายเยาวชน">กิจกรรมพัฒนาเครือข่ายเยาวชน</option>
+                <!-- Dynamic options -->
               </select>
             </div>
             <div>
@@ -317,26 +262,96 @@
     </main>
   </div>
 
-  <!-- MODALS -->
-  <div id="modal-admin-login" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <h3 class="text-lg font-bold text-center">🔑 เข้าสู่ระบบแอดมิน</h3>
-      <input type="password" id="admin-pass-input" placeholder="รหัสผ่าน (ตั้งต้น: admin123)" class="w-full bg-slate-50 border rounded-xl p-3 text-sm outline-none">
-      <div class="flex gap-2">
-        <button onclick="toggleAdminModal()" class="w-1/2 py-2.5 rounded-xl border text-xs font-bold text-slate-600">ยกเลิก</button>
-        <button onclick="handleAdminLogin()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold">เข้าสู่ระบบ</button>
+  <!-- ============================================================ -->
+  <!-- 🟡 POPUP MODALS (เพิ่มระบบทำงานจริงแทน Alert ทั้งหมด) -->
+  <!-- ============================================================ -->
+  
+  <!-- 1. Modal: สร้างกิจกรรมใหม่ -->
+  <div id="modal-create-activity" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-800">✨ + สร้างกิจกรรมใหม่</h3>
+        <button onclick="closeCreateActivityModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-700">ชื่อกิจกรรม</label>
+          <input type="text" id="new-act-title" placeholder="เช่น จิตอาสาพัฒนาโรงเรียน" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">วันที่จัดกิจกรรม</label>
+          <input type="text" id="new-act-date" placeholder="เช่น 15 ตุลาคม 2569" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">สถานที่</label>
+          <input type="text" id="new-act-location" placeholder="เช่น หอประชุมใหญ่ หอวัง ปทุมธานี" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">ลิงก์รูปภาพกิจกรรม (เว้นไว้ได้ถ้าไม่มี)</label>
+          <input type="text" id="new-act-image" placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeCreateActivityModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50">ยกเลิก</button>
+        <button onclick="handleCreateActivity()" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold shadow hover:from-amber-600 hover:to-amber-700">สร้างกิจกรรม</button>
       </div>
     </div>
   </div>
 
-  <div id="modal-add-personnel" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+  <!-- 2. Modal: ลงทะเบียนเข้าร่วมกิจกรรม -->
+  <div id="modal-register" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-800">📝 ลงทะเบียนเข้าร่วมกิจกรรม</h3>
+        <button onclick="closeRegisterModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-700">กิจกรรมที่ต้องการเข้าร่วม</label>
+          <input type="text" id="reg-act-name" readonly class="w-full bg-slate-100 font-bold text-blue-900 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">เลขประจำตัวนักเรียน</label>
+          <input type="text" id="reg-student-id" placeholder="เช่น 13882" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">ชื่อ-นามสกุล</label>
+          <input type="text" id="reg-student-name" placeholder="นาย/นางสาว..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">ระดับชั้น</label>
+          <input type="text" id="reg-student-class" placeholder="เช่น ม.5/3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeRegisterModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50">ยกเลิก</button>
+        <button onclick="handleRegisterSubmit()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">ยืนยันลงทะเบียน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Modal: แอดมิน / จัดการข้อมูล -->
+  <div id="modal-admin-login" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-bold text-center text-slate-800">🔑 เข้าสู่ระบบแอดมิน</h3>
+      <p class="text-xs text-center text-slate-500">กรอกรหัสผ่านแอดมินเพื่อเข้าสู่ระบบจัดการข้อมูล (รหัสผ่านเริ่มต้น: admin123)</p>
+      <input type="password" id="admin-pass-input" placeholder="รหัสผ่าน" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+      <div class="flex gap-2">
+        <button onclick="toggleAdminModal()" class="w-1/2 py-2.5 rounded-xl border text-xs font-bold text-slate-600 hover:bg-slate-50">ยกเลิก</button>
+        <button onclick="handleAdminLogin()" class="w-1/2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Modal: เพิ่มรายชื่อบุคลากร -->
+  <div id="modal-add-personnel" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <h3 class="font-bold border-b pb-2 text-slate-800">➕ เพิ่มรายชื่อใหม่</h3>
       <div class="space-y-3 text-xs">
-        <div><label class="font-semibold text-slate-600">รหัส / เลขประจำตัว</label><input type="text" id="input-no" class="w-full border rounded-xl p-2.5 mt-1"></div>
-        <div><label class="font-semibold text-slate-600">ชื่อ-นามสกุล</label><input type="text" id="input-name" class="w-full border rounded-xl p-2.5 mt-1"></div>
-        <div><label class="font-semibold text-slate-600">ชั้นเรียน</label><input type="text" id="input-class" class="w-full border rounded-xl p-2.5 mt-1"></div>
-        <div><label class="font-semibold text-slate-600">สังกัด / ฝ่ายงาน</label><input type="text" id="input-dept" class="w-full border rounded-xl p-2.5 mt-1"></div>
+        <div><label class="font-semibold text-slate-600">รหัส / เลขประจำตัว</label><input type="text" id="input-no" class="w-full border rounded-xl p-2.5 mt-1 bg-slate-50"></div>
+        <div><label class="font-semibold text-slate-600">ชื่อ-นามสกุล</label><input type="text" id="input-name" class="w-full border rounded-xl p-2.5 mt-1 bg-slate-50"></div>
+        <div><label class="font-semibold text-slate-600">ชั้นเรียน</label><input type="text" id="input-class" class="w-full border rounded-xl p-2.5 mt-1 bg-slate-50"></div>
+        <div><label class="font-semibold text-slate-600">สังกัด / ฝ่ายงาน</label><input type="text" id="input-dept" class="w-full border rounded-xl p-2.5 mt-1 bg-slate-50"></div>
       </div>
       <div class="flex gap-2 mt-4">
         <button onclick="closeAddPersonnelModal()" class="w-1/2 py-2 border rounded-xl text-xs font-bold text-slate-600">ยกเลิก</button>
@@ -345,8 +360,30 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+
+  <!-- ============================================================ -->
+  <!-- ⚙️ JAVASCRIPT LOGIC -->
+  <!-- ============================================================ -->
   <script>
+    // กิจกรรมตั้งต้น (เดิม)
+    const defaultActivities = [
+      {
+        id: 1,
+        title: "จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์",
+        date: "11-12 กันยายน 2569",
+        location: "วัดพระธรรมกาย",
+        image: "https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png"
+      },
+      {
+        id: 2,
+        title: "จิตอาสาหล่อพระ",
+        date: "8 กันยายน 2569",
+        location: "วัดปฐมวนาราม",
+        image: "https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png"
+      }
+    ];
+
+    // รายชื่อบุคลากรตั้งต้น
     const initialPersonnelData = [
       { id: 1, no: "13882", name: "นายกิตติกร ไทยมานิตย์", class: "ม.5/3", dept: "ที่ปรึกษาอวุโสองค์กร" },
       { id: 2, no: "13894", name: "นางสาวกวินธิดา สรสุวรรณ", class: "ม.5/3", dept: "ส่วนงานงบประมาณ" },
@@ -361,6 +398,7 @@
     ];
 
     let isAdmin = true;
+    let activitiesList = JSON.parse(localStorage.getItem('hwp_activities')) || defaultActivities;
     let personnelList = JSON.parse(localStorage.getItem('hwp_personnel')) || initialPersonnelData;
     let attendanceRecords = JSON.parse(localStorage.getItem('hwp_records')) || [];
     let currentStatuses = {};
@@ -368,12 +406,14 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('checkin-date').valueAsDate = new Date();
+      renderActivities();
       renderCheckinList();
       renderPersonnelTable();
       renderRecordsList();
       updateBadges();
     });
 
+    // 🟢 ระบบการสลับหน้า
     function switchAppPage(pageId) {
       document.getElementById('page-main').classList.add('page-hidden');
       document.getElementById('page-attendance').classList.add('page-hidden');
@@ -388,6 +428,124 @@
       if(!chartStatusInstance) initCharts();
     }
 
+    // 🟢 ระบบการจัดการกิจกรรม (สร้าง & แสดงผล)
+    function renderActivities() {
+      const container = document.getElementById('activities-grid');
+      const selectCheckin = document.getElementById('checkin-activity');
+      
+      container.innerHTML = activitiesList.map(act => `
+        <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 flex flex-col">
+          <div class="relative h-48 bg-slate-800">
+            <img src="${act.image || 'https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png'}" class="w-full h-full object-cover opacity-80" alt="${act.title}">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex items-end">
+              <h3 class="text-white font-bold text-lg leading-snug">${act.title}</h3>
+            </div>
+          </div>
+          <div class="p-5 space-y-4 flex-grow flex flex-col justify-between">
+            <div class="space-y-1.5 text-xs text-slate-500 font-medium">
+              <div class="flex items-center gap-2">
+                <span>📅</span> ${act.date}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-red-500">📍</span> ${act.location}
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="openRegisterModal('${act.title}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs">
+                ลงทะเบียนเข้าร่วม
+              </button>
+              <button onclick="openAttendancePage('${act.title}', '${act.location}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-2xl shadow transition text-xs flex items-center justify-center gap-1">
+                📋 เช็คชื่อกิจกรรมนี้
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // อัปเดตตัวเลือกในระบบเช็คชื่อ
+      selectCheckin.innerHTML = activitiesList.map(act => `<option value="${act.title}">${act.title}</option>`).join('');
+    }
+
+    function openCreateActivityModal() {
+      document.getElementById('modal-create-activity').classList.remove('hidden');
+    }
+    function closeCreateActivityModal() {
+      document.getElementById('modal-create-activity').classList.add('hidden');
+    }
+    function handleCreateActivity() {
+      const title = document.getElementById('new-act-title').value;
+      const date = document.getElementById('new-act-date').value;
+      const location = document.getElementById('new-act-location').value;
+      const image = document.getElementById('new-act-image').value;
+
+      if (!title || !date || !location) {
+        alert("กรุณากรอกข้อมูล ชื่อกิจกรรม วันที่ และสถานที่ ให้ครบถ้วน");
+        return;
+      }
+
+      const newActivity = {
+        id: Date.now(),
+        title,
+        date,
+        location,
+        image: image || "https://fmemcvzvoxfbiqldtkyx.supabase.co/storage/v1/object/public/activity-images/Photoroom_25690716_222911.png"
+      };
+
+      activitiesList.unshift(newActivity);
+      localStorage.setItem('hwp_activities', JSON.stringify(activitiesList));
+      renderActivities();
+      closeCreateActivityModal();
+
+      // Reset Inputs
+      document.getElementById('new-act-title').value = '';
+      document.getElementById('new-act-date').value = '';
+      document.getElementById('new-act-location').value = '';
+      document.getElementById('new-act-image').value = '';
+    }
+
+    // 🟢 ระบบการลงทะเบียนเข้าร่วมกิจกรรม
+    function openRegisterModal(activityTitle) {
+      document.getElementById('reg-act-name').value = activityTitle;
+      document.getElementById('modal-register').classList.remove('hidden');
+    }
+    function closeRegisterModal() {
+      document.getElementById('modal-register').classList.add('hidden');
+    }
+    function handleRegisterSubmit() {
+      const studentId = document.getElementById('reg-student-id').value;
+      const name = document.getElementById('reg-student-name').value;
+      const cls = document.getElementById('reg-student-class').value;
+
+      if (!name) {
+        alert("กรุณากรอกชื่อ-นามสกุล");
+        return;
+      }
+
+      // ตรวจสอบว่ามีชื่อนี้ในระบบบุคลากรหรือยัง ถ้าไม่มีจะเพิ่มให้เลย
+      const exists = personnelList.find(p => p.name === name || (studentId && p.no === studentId));
+      if (!exists) {
+        personnelList.push({
+          id: Date.now(),
+          no: studentId || "-",
+          name: name,
+          class: cls || "-",
+          dept: "ลงทะเบียนทั่วไป"
+        });
+        localStorage.setItem('hwp_personnel', JSON.stringify(personnelList));
+        renderPersonnelTable();
+        renderCheckinList();
+        updateBadges();
+      }
+
+      closeRegisterModal();
+      
+      // Reset Inputs
+      document.getElementById('reg-student-id').value = '';
+      document.getElementById('reg-student-name').value = '';
+      document.getElementById('reg-student-class').value = '';
+    }
+
+    // 🟢 ระบบแท็บเช็คชื่อ
     function switchTab(tabName) {
       ['checkin', 'daily', 'records', 'stats', 'personnel'].forEach(t => {
         document.getElementById('sec-' + t).classList.add('hidden');
@@ -398,16 +556,23 @@
       if (tabName === 'stats') updateStats();
     }
 
-    function toggleAdminModal() { document.getElementById('modal-admin-login').classList.toggle('hidden'); }
+    // 🟢 ระบบจัดการแอดมิน
+    function toggleAdminModal() { 
+      document.getElementById('modal-admin-login').classList.toggle('hidden'); 
+    }
     function handleAdminLogin() {
       const pass = document.getElementById('admin-pass-input').value;
       if (pass === 'admin123' || pass === '') {
         isAdmin = true;
-        alert("✅ เข้าสู่ระบบแอดมินสำเร็จ");
         toggleAdminModal();
-      } else { alert("❌ รหัสผ่านไม่ถูกต้อง"); }
+        switchAppPage('page-attendance');
+        switchTab('personnel');
+      } else { 
+        alert("❌ รหัสผ่านไม่ถูกต้อง"); 
+      }
     }
 
+    // 🟢 ระบบเช็คชื่อจิตอาสา
     function renderCheckinList() {
       const container = document.getElementById('checkin-list-container');
       if (!personnelList.length) {
@@ -460,7 +625,6 @@
 
       attendanceRecords.unshift(record);
       localStorage.setItem('hwp_records', JSON.stringify(attendanceRecords));
-      alert("✅ บันทึกการเช็คชื่อเรียบร้อยแล้ว!");
       renderRecordsList();
       updateBadges();
       switchTab('records');
@@ -527,7 +691,7 @@
           <td class="p-3 font-medium text-slate-800">${p.name}</td>
           <td class="p-3 text-slate-600">${p.class}</td>
           <td class="p-3 text-slate-600">${p.dept}</td>
-          <td class="p-3 text-center"><button onclick="deletePersonnel(${p.id})" class="text-rose-500 font-bold text-xs bg-rose-50 px-2.5 py-1 rounded-lg">ลบ</button></td>
+          <td class="p-3 text-center"><button onclick="deletePersonnel(${p.id})" class="text-rose-500 font-bold text-xs bg-rose-50 px-2.5 py-1 rounded-lg hover:bg-rose-100">ลบ</button></td>
         </tr>
       `).join('');
     }
