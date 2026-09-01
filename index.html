@@ -58,6 +58,7 @@
         <button onclick="checkAdminAuth('add-activity')" class="px-4 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-full font-bold shadow transition">✨ สร้างกิจกรรม</button>
         <button onclick="checkAdminAuth('admin')" class="px-4 py-2 bg-blue-800 rounded-full hover:bg-blue-700 transition font-medium border border-blue-600">🛡️ จัดการข้อมูล</button>
         <span id="admin-status-badge" class="hidden text-xs bg-emerald-500 text-white px-3 py-1 rounded-full font-bold">แอดมินล็อกอินแล้ว</span>
+        <button onclick="openAttendanceModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-md transition flex items-center gap-1.5 border border-indigo-400">📋 ระบบเช็คชื่อ</button>
       </div>
     </div>
   </header>
@@ -675,161 +676,64 @@
       }
     }
   </script>
-</body>
-</html>
-<!-- ============================================================ -->
-<!-- 📋 ส่วนโครงสร้างหน้าจอระบบเช็คชื่อ (นำไปวางใน <body> ของโค้ดเดิม) -->
-<!-- ============================================================ -->
-<div id="attendance-section" class="max-w-4xl mx-auto p-6 bg-slate-50 rounded-3xl space-y-6">
-  
-  <!-- 1. ส่วนตั้งค่ากิจกรรมและวันที่ -->
-  <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">⚙️ กำหนดข้อมูลกิจกรรม</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-      <div>
-        <label class="font-semibold text-slate-700">วันที่</label>
-        <input type="date" id="chk-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none">
+  <!-- 📋 Popup Modal ระบบเช็คชื่อ -->
+<div id="attendance-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+  <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div class="bg-[#172554] text-white p-4 px-6 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">📋</span>
+        <h3 class="font-bold text-base">ระบบเช็คชื่อเข้าร่วมกิจกรรม</h3>
       </div>
-      <div>
-        <label class="font-semibold text-slate-700">กิจกรรม</label>
-        <select id="chk-activity" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none">
-          <option value="จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์">จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์</option>
-          <option value="จิตอาสาหล่อพระ">จิตอาสาหล่อพระ</option>
-        </select>
-      </div>
-      <div>
-        <label class="font-semibold text-slate-700">สถานที่</label>
-        <input type="text" id="chk-location" placeholder="เช่น วัดพระธรรมกาย" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none">
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. รายชื่อและปุ่มเลือกสถานะ -->
-  <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-    <div class="flex justify-between items-center border-b pb-4">
-      <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">📝 รายชื่อผู้เข้าร่วม</h3>
-      <div class="flex gap-2">
-        <button onclick="setAllAttendanceStatus('มา')" class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-200 hover:bg-emerald-100">
-          ✅ มาทั้งหมด
-        </button>
-        <button onclick="saveAttendanceData()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow">
-          💾 บันทึกข้อมูล
-        </button>
-      </div>
+      <button onclick="closeAttendanceModal()" class="text-white/70 hover:text-white font-bold text-xl leading-none">&times;</button>
     </div>
 
-    <!-- คอนเทนเนอร์แสดงรายชื่อ -->
-    <div id="attendance-list-container" class="divide-y divide-slate-100"></div>
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto space-y-4 text-slate-800">
+      
+      <!-- เลือกกิจกรรมและวันที่ -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-200">
+        <div>
+          <label class="font-semibold text-slate-700">📅 วันที่</label>
+          <input type="date" id="chk-date" class="w-full bg-white border border-slate-200 rounded-xl p-2 mt-1 outline-none">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">📑 กิจกรรม</label>
+          <select id="chk-activity" class="w-full bg-white border border-slate-200 rounded-xl p-2 mt-1 outline-none">
+            <option value="จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์">จิตอาสาอบรมเชิงปฏิบัติการกฐินสัมฤทธิ์</option>
+            <option value="จิตอาสาหล่อพระ">จิตอาสาหล่อพระ</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- รายชื่อผู้เข้าร่วม -->
+      <div class="space-y-3">
+        <div class="flex justify-between items-center border-b pb-2">
+          <span class="font-bold text-xs text-slate-700">👥 รายชื่อผู้เข้าร่วม</span>
+          <button onclick="setAllAttendanceStatus('มา')" class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-xl text-xs font-bold border border-emerald-200 hover:bg-emerald-100">
+            ✅ มาทั้งหมด
+          </button>
+        </div>
+
+        <div id="attendance-list-container" class="divide-y divide-slate-100 max-h-60 overflow-y-auto pr-1"></div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="bg-slate-50 border-t p-4 px-6 flex justify-end gap-2">
+      <button onclick="closeAttendanceModal()" class="px-4 py-2 rounded-xl border text-xs font-bold text-slate-600 hover:bg-slate-100">
+        ยกเลิก
+      </button>
+      <button onclick="saveAttendanceData()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">
+        💾 บันทึกข้อมูล
+      </button>
+    </div>
   </div>
 </div>
-
-
-<!-- ============================================================ -->
-<!-- ⚙️ ส่วน Script ระบบการทำงาน (นำไปใส่ในแท็ก <script> เดิม) -->
-<!-- ============================================================ -->
-<script>
-  // 1. ข้อมูลนักเรียน/จิตอาสาตั้งต้น (สามารถเชื่อมกับ Data เดิมของคุณได้)
-  let studentList = JSON.parse(localStorage.getItem('hwp_personnel')) || [
-    { id: 1, no: "13882", name: "นายกิตติกร ไทยมานิตย์", class: "ม.5/3" },
-    { id: 2, no: "13894", name: "นางสาวกวินธิดา สรสุวรรณ", class: "ม.5/3" },
-    { id: 3, no: "13896", name: "นางสาวขวัญจิรา บุญมานะ", class: "ม.5/3" }
-  ];
-
-  // ตัวแปรเก็บสถานะชั่วคราวขณะเช็คชื่อ
-  let currentAttendance = {};
-
-  // กำหนดวันที่ปัจจุบันใน ช่อง Date
-  document.getElementById('chk-date').valueAsDate = new Date();
-
-  // Render รายชื่อพร้อมปุ่มสถานะ
-  function renderAttendanceList() {
-    const container = document.getElementById('attendance-list-container');
-    if (!studentList.length) {
-      container.innerHTML = `<div class="py-6 text-center text-slate-400 text-sm">ไม่มีรายชื่อนักเรียน</div>`;
-      return;
-    }
-
-    container.innerHTML = studentList.map(st => {
-      const status = currentAttendance[st.id] || 'ขาด';
-      return `
-        <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm">
-          <div>
-            <span class="font-bold text-blue-600 mr-1">[${st.no}]</span>
-            <span class="font-bold text-slate-800">${st.name}</span>
-            <span class="text-xs text-slate-400 ml-2">(${st.class})</span>
-          </div>
-          <div class="flex items-center gap-1">
-            ${['มา', 'สาย', 'ลา', 'ขาด'].map(type => `
-              <button onclick="setSingleStatus(${st.id}, '${type}')" class="px-3 py-1 rounded-xl text-xs font-bold transition ${
-                status === type ? getBadgeColor(type) : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }">
-                ${type}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // กำหนดสีของปุ่มตามสถานะ
-  function getBadgeColor(type) {
-    switch(type) {
-      case 'มา': return 'bg-emerald-500 text-white';
-      case 'สาย': return 'bg-amber-500 text-white';
-      case 'ลา': return 'bg-sky-500 text-white';
-      case 'ขาด': return 'bg-rose-500 text-white';
-    }
-  }
-
-  // เปลี่ยนสถานะรายคน
-  function setSingleStatus(id, statusType) {
-    currentAttendance[id] = statusType;
-    renderAttendanceList();
-  }
-
-  // เปลี่ยนสถานะทั้งหมด
-  function setAllAttendanceStatus(statusType) {
-    studentList.forEach(st => currentAttendance[st.id] = statusType);
-    renderAttendanceList();
-  }
-
-  // บันทึกข้อมูลเช็คชื่อ
-  function saveAttendanceData() {
-    const date = document.getElementById('chk-date').value;
-    const activity = document.getElementById('chk-activity').value;
-    const location = document.getElementById('chk-location').value;
-
-    const record = {
-      id: Date.now(),
-      date,
-      activity,
-      location,
-      records: studentList.map(st => ({
-        id: st.id,
-        no: st.no,
-        name: st.name,
-        status: currentAttendance[st.id] || 'ขาด'
-      }))
-    };
-
-    // ดึงประวัติเดิมมาเพิ่ม และลง LocalStorage
-    let savedRecords = JSON.parse(localStorage.getItem('hwp_records')) || [];
-    savedRecords.unshift(record);
-    localStorage.setItem('hwp_records', JSON.stringify(savedRecords));
-
-    // แสดง Modal Custom หรือเรียกใช้งาน Notification ตามต้องการ
-    showSuccessToast("บันทึกข้อมูลการเช็คชื่อเรียบร้อยแล้ว!");
-  }
-
-  // แจ้งเตือนเมื่อบันทึกสำเร็จ (ไม่ต้องใช้ Alert เบราว์เซอร์)
-  function showSuccessToast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'fixed bottom-5 right-5 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl font-bold text-sm z-50 transition transform translate-y-0';
-    toast.innerText = '✅ ' + msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
+</body>
+</html>
 
   // เริ่มทำงาน Render ทันทีที่โหลด
   renderAttendanceList();
